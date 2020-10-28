@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 
 from pandas.plotting import register_matplotlib_converters
 
+from cal_return import calculate_return2
+
 def _pandas_converters():
     converters_active = check_if_active()  # something like pd.Timestamp in matplotlib.units.registry
     pd.plotting.deregister_matplotlib_converters()
@@ -40,14 +42,33 @@ def open_file():
         data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
         #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
         data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
+        data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
+        data_annualmax=data.groupby(data['year']).max()
+
+
+
+
+        data_dischargesorted=calculate_return2(data,data.columns[1])
         df=data.groupby(pd.Grouper(key=data.columns[0], freq='1M'))[data.columns[1]].mean()
         df=df.rolling(10,1).mean()
         
-        try1=plt.plot(data.groupby(pd.Grouper(key=data.columns[0], freq='1M'))[data.columns[1]].mean(),'g-', label='median')#plot monthly mean
-        try2=plt.plot(data.groupby(pd.Grouper(key=data.columns[0], freq='1M'))[data.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
-        plt.legend()
-        plt.xlabel('Date/Time')
-        plt.ylabel('Water Discharge (m/s)')
+        #try1=plt.plot(data.groupby(pd.Grouper(key=data.columns[0], freq='1M'))[data.columns[1]].mean(),'g-', label='median')#plot monthly mean
+        #try2=plt.plot(data.groupby(pd.Grouper(key=data.columns[0], freq='1M'))[data.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
+        #plt.legend()
+        #plt.xlabel('Date/Time')
+        #plt.ylabel('Water Discharge (m/s)')
+       # for group in groupped:
+          # plt.plot(group['probability'],group[data_dischargesorted.columns[2]],)
+        
+        df2=data_dischargesorted.sort_values(by= data_dischargesorted.columns[2],ascending=False)
+        colum=df2[df2.columns[2]]
+        data_dischargesorted['descending discharge']=colum
+        #print(data_dischargesorted)
+        plt.plot(data_dischargesorted['exceeding probability'],colum,color='grey',label="Daily Mean Calculated")
+        plt.xlabel('exceeding probability')
+        plt.ylabel('Discharge')
+        plt.xlim(0,100)
+        plt.title("Annual Flow duration")
 #         try1=plt.plot(x, y,'g',label='Count')
 #         plt.xlabel('Time')
 #         plt.ylabel('Count')
