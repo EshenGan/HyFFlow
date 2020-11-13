@@ -1,7 +1,6 @@
-import tkinter as tk
 import pandas as pd
 import numpy as np
-from tkinter.filedialog import askopenfile
+
 
 import matplotlib
 matplotlib.use('TkAgg')
