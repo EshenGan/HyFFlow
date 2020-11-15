@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+import datetime as dt
+import math
 
 
 import matplotlib
@@ -11,22 +13,11 @@ import matplotlib.pyplot as plt
 from pandas.plotting import register_matplotlib_converters
 from pandas import DataFrame
 
-from cal_return import calculate_return2
-from cal_return import split_years
-
-
-root = tk.Tk()
-
 fig, ax = plt.subplots(figsize=(15,6))
-t = np.arange(0.0,3.0,0.01)
-s = np.sin(np.pi*t)
-plt.plot(t,s)
-
-canvas = FigureCanvasTkAgg(fig, master=root)
-plot_widget = canvas.get_tk_widget()
 
 
 def flowplot(data):
+    #plot flow of duration
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])   
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
@@ -36,7 +27,7 @@ def flowplot(data):
     col=data[data.columns[1]]
     maxi=col.max()
     mini=col.min()
-
+    
     data_dischargesorted=calculate_return2(data,data.columns[1])
     n=len(df3)
     for y in range(n-1):
@@ -67,6 +58,7 @@ def flowplot(data):
         plt.title("Annual Flow duration")
 
 def hydrograph(df):
+    #plot hydro with hyeto
     fig = plt.figure(figsize=(15,6))
     gs = gridspec.GridSpec(2, 1, height_ratios=[1, 2])
     ax = plt.subplot(gs[1])
@@ -104,7 +96,34 @@ def hydrograph(df):
     plt.gcf().subplots_adjust(bottom=0.15)
     plt.show()
 
+def hydrograph(df):
+    #plot hydro 
+    
+    df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])
+    df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
+    df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
+
+    try1=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='median')#plot monthly mean
+    try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
+
+    ax.set_ylabel(df.columns[1], color='b')
+    ax.set_xlabel(df.columns[0])
+    ax.set_xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
+    ax.set_ylim(0, df[df.columns[1]].max()*1.2)
+
+    ax2 = plt.subplot(gs[0])
+
+    ax.legend()
+
+    ax2.set_ylabel(df2.columns[1], color='b')
+    plt.tight_layout()
+    ax2.invert_yaxis()
+    plt.gcf().subplots_adjust(bottom=0.15)
+    plt.show()
+
+
 def floodcurve(data):
+    #plot flood duration curve
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
@@ -127,12 +146,13 @@ def floodcurve(data):
 
 
 def medianmonthDis(data):
+    #median of discharge group by month
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
 
-    data_monthmedian=DataFrame(data.groupby(data['months']).median()).reset_index()
+    data_monthmedian=DataFrame(data.groupby(data['months'])[data.columns[1]].median()).reset_index()
 
 
     plt.bar(data_monthmedian.months,data_monthmedian[data_monthmedian.columns[1]])
@@ -142,15 +162,80 @@ def medianmonthDis(data):
 
     
 def medianmonthRain(data):
+    #plot median of rainfall group by month
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
 
-    data_monthmedian=DataFrame(data.groupby(data['months']).median()).reset_index()
+    data_monthmedian=DataFrame(data.groupby(data['months'])[data.columns[2]].median()).reset_index()
 
 
     plt.bar(data_monthmedian.months,data_monthmedian[data_monthmedian.columns[2]])
     plt.xlabel('months')
     plt.ylabel('Rainfall (m/s)')
     plt.title("Median of Month")
+
+
+
+#function used
+def calculate_return(df, colname):
+    '''
+    Add Documentation Here
+
+
+    '''
+    # Sort data smallest to largest
+    sorted_data = df.sort_values(colname,ascending=False)
+    
+    # Count total obervations
+    n = sorted_data.shape[0]
+    
+    # Add a numbered column 1 -> n to use in return calculation for rank
+    sorted_data.insert(0, 'rank', range(1, 1 + n))
+    sorted_data = sorted_data.sort_values(colname,ascending=True)
+    # Calculate probability
+    sorted_data["q1"] = (sorted_data['rank']-0.44) / (n + 1 - 2 * 0.44)
+    sorted_data["p1"]=1-sorted_data["q1"]
+    sorted_data["Tp"]=1/(1-sorted_data["p1"])
+
+
+    s=sorted_data[colname].std()
+    a=math.sqrt(6)*s/math.pi
+    u=sorted_data[colname].mean()-0.5772*a
+    print(a)
+    sorted_data["x-u/a"]=(sorted_data[colname]-u)/a
+    sorted_data["p theoritical"]=np.exp(-np.exp(-sorted_data["x-u/a"]))
+    sorted_data["Tp t"]=1/(1-sorted_data["p theoritical"])
+    # Calculate return - data are daily to then divide by 365?
+
+    return(sorted_data)
+
+
+
+def calculate_return2(df, colname):
+    '''
+    Add Documentation Here
+
+
+    '''
+    # Sort data smallest to largest
+    sorted_data = df.sort_values(colname)
+    
+    # Count total obervations
+    n = sorted_data.shape[0]
+    
+    # Add a numbered column 1 -> n to use in return calculation for rank
+    sorted_data.insert(0, 'rank', range(1, 1 + n))
+    
+    # Calculate probability
+    sorted_data["frequency"] = n /sorted_data["rank"]
+    
+    # Calculate return - data are daily to then divide by 365?
+    sorted_data["exceeding probability"]=(1/sorted_data["frequency"])*100
+
+    return(sorted_data)
+
+def split_years(df):
+    df['year'] = df['Date/Time'].dt.year
+    return [df[df['year'] == y] for y in df['year'].unique()]
