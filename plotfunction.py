@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import datetime as dt
 import math
-
+from matplotlib import gridspec
 
 import matplotlib
 matplotlib.use('TkAgg')
@@ -18,11 +18,12 @@ fig, ax = plt.subplots(figsize=(15,6))
 
 def flowplot(data):
     #plot flow of duration
+    
+
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])   
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
     data_annualmax=data.groupby(data['year']).max()
-
     df3=split_years(data)
     col=data[data.columns[1]]
     maxi=col.max()
@@ -38,36 +39,33 @@ def flowplot(data):
         col=dataplot[dataplot.columns[2]]
         culmax=col.max()
         culmin=col.min()
-        if culmax==maxi or culmin==mini:
+        if culmax==maxi:
             temp=dataplot.groupby('year',as_index=False).count()
             temp.set_index('year')
             c=temp.year[0]
-            plt.plot(dataplot['exceeding probability'],colum,label=c)
+            tr=plt.plot(dataplot['exceeding probability'],colum,label=c)
+        elif culmin==mini:
+            temp=dataplot.groupby('year',as_index=False).count()
+            temp.set_index('year')
+            c=temp.year[0]
+            try2=plt.plot(dataplot['exceeding probability'],colum,label=c)
         else:
-            plt.plot(dataplot['exceeding probability'],colum)
+            plt.plot(dataplot['exceeding probability'],colum,label=None)
             
-        
-        plt.legend()
+    plt.legend()    
+    plt.xlabel('exceeding probability')
+    plt.ylabel('Discharge')
+    plt.xlim(0,100)
+    plt.title("Annual Flow duration")
 
-
-
-      
-        plt.xlabel('exceeding probability')
-        plt.ylabel('Discharge')
-        plt.xlim(0,100)
-        plt.title("Annual Flow duration")
-
-def hydrograph(df):
+def hydrograph(df,gs):
     #plot hydro with hyeto
-    fig = plt.figure(figsize=(15,6))
-    gs = gridspec.GridSpec(2, 1, height_ratios=[1, 2])
     ax = plt.subplot(gs[1])
-    
-    df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])
+    df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])   
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
 
-    try1=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='median')#plot monthly mean
+    try1=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='mean')#plot monthly mean
     try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
 
     ax.set_ylabel(df.columns[1], color='b')
@@ -89,38 +87,28 @@ def hydrograph(df):
     ax2.yaxis.tick_right()
     ax2.set_xticks([])
     ax.legend()
-
     ax2.set_ylabel(df2.columns[1], color='b')
     plt.tight_layout()
     ax2.invert_yaxis()
     plt.gcf().subplots_adjust(bottom=0.15)
-    plt.show()
 
-def hydrograph(df):
+def hydrographOnly(df):
     #plot hydro 
     
     df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
 
-    try1=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='median')#plot monthly mean
-    try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
+    try1=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='median')#plot monthly mean
+    try2=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
 
-    ax.set_ylabel(df.columns[1], color='b')
-    ax.set_xlabel(df.columns[0])
-    ax.set_xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
-    ax.set_ylim(0, df[df.columns[1]].max()*1.2)
-
-    ax2 = plt.subplot(gs[0])
-
-    ax.legend()
-
-    ax2.set_ylabel(df2.columns[1], color='b')
+    plt.ylabel(df.columns[1], color='b')
+    plt.xlabel(df.columns[0])
+    plt.xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
+    plt.ylim(0, df[df.columns[1]].max()*1.2)
+    plt.legend()
     plt.tight_layout()
-    ax2.invert_yaxis()
     plt.gcf().subplots_adjust(bottom=0.15)
-    plt.show()
-
 
 def floodcurve(data):
     #plot flood duration curve
@@ -203,7 +191,7 @@ def calculate_return(df, colname):
     s=sorted_data[colname].std()
     a=math.sqrt(6)*s/math.pi
     u=sorted_data[colname].mean()-0.5772*a
-    print(a)
+
     sorted_data["x-u/a"]=(sorted_data[colname]-u)/a
     sorted_data["p theoritical"]=np.exp(-np.exp(-sorted_data["x-u/a"]))
     sorted_data["Tp t"]=1/(1-sorted_data["p theoritical"])
@@ -239,3 +227,4 @@ def calculate_return2(df, colname):
 def split_years(df):
     df['year'] = df['Date/Time'].dt.year
     return [df[df['year'] == y] for y in df['year'].unique()]
+
