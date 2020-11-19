@@ -3,7 +3,6 @@ import numpy as np
 import datetime as dt
 import math
 from matplotlib import gridspec
-
 import matplotlib
 matplotlib.use('TkAgg')
 
@@ -58,36 +57,39 @@ def flowplot(data):
     plt.xlim(0,100)
     plt.title("Annual Flow duration")
 
-def hydrograph(df,gs):
+def hydrograph(df,data,gs):
     #plot hydro with hyeto
     ax = plt.subplot(gs[1])
     df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])   
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
 
-    try1=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='mean')#plot monthly mean
-    try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
+    dfmean=DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean()).reset_index()
+    try1=ax.plot(dfmean[dfmean.columns[0]],dfmean[dfmean.columns[1]],'b-', label='mean')#plot monthly mean
+    try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(10).mean(),'r', label='moving average')#plot moving average 
 
     ax.set_ylabel(df.columns[1], color='b')
-    ax.set_xlabel(df.columns[0])
-
+    ax.set_xlabel(dfmean.columns[0])
+    
     ax.set_xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
-    ax.set_ylim(0, df[df.columns[1]].max()*1.2)
+    ax.set_ylim(0, dfmean[dfmean.columns[1]].max()*1.2)
 
     ax2 = plt.subplot(gs[0])
-    df2=DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean()).reset_index()
+    data['mean'] = data.mean(axis=1)
 
-
-    try3=ax2.bar(df2[df2.columns[0]],df2[df2.columns[1]],width=10, label='median rainfall')
+    try3=ax2.bar(data[data.columns[0]],data['mean'], label='mean rainfall',color='black',width=5,snap=False)
 
     ax2.xaxis.grid(b=True, which='major', color='.7', linestyle='-')
     ax2.yaxis.grid(b=True, which='major', color='0.7', linestyle='-')
-    ax2.set_xlim(df2[df2.columns[0]].min(), df[df.columns[0]].max())
+    ax2.set_xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
+    ax2.set_ylim(data['mean'].min(), data['mean'].max())
+
     ax2.yaxis.set_label_position("right")
+
     ax2.yaxis.tick_right()
     ax2.set_xticks([])
     ax.legend()
-    ax2.set_ylabel(df2.columns[1], color='b')
+    ax2.set_ylabel('RainFall', color='b')
     plt.tight_layout()
     ax2.invert_yaxis()
     plt.gcf().subplots_adjust(bottom=0.15)
@@ -98,14 +100,15 @@ def hydrographOnly(df):
     df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
-
-    try1=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'g-', label='median')#plot monthly mean
-    try2=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(12).mean(),'r', label='moving average')#plot moving average 
+    dfmean=DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean()).reset_index()
+    try1=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'b-', label='median')#plot monthly mean
+    try2=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(10).mean(),'r', label='moving average')#plot moving average 
 
     plt.ylabel(df.columns[1], color='b')
     plt.xlabel(df.columns[0])
     plt.xlim(df[df.columns[0]].min(), df[df.columns[0]].max())
-    plt.ylim(0, df[df.columns[1]].max()*1.2)
+    plt.ylim(0, dfmean[dfmean.columns[1]].max()*1.2)
+
     plt.legend()
     plt.tight_layout()
     plt.gcf().subplots_adjust(bottom=0.15)
@@ -139,11 +142,12 @@ def medianmonthDis(data):
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
+    data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
+    data=data.sort_values(by=data.columns[1])
+    data_monthmedian=DataFrame(data.groupby([data['month'],data['months']])[data.columns[1]].median()).reset_index()
 
-    data_monthmedian=DataFrame(data.groupby(data['months'])[data.columns[1]].median()).reset_index()
-
-
-    plt.bar(data_monthmedian.months,data_monthmedian[data_monthmedian.columns[1]])
+    plt.bar(data_monthmedian.months,data_monthmedian[data.columns[1]])
+    plt.ylim(0,data_monthmedian[data_monthmedian.columns[2]].max()*1.2)
     plt.xlabel('months')
     plt.ylabel('Discharge (m/s)')
     plt.title("Median of Month")
@@ -152,14 +156,17 @@ def medianmonthDis(data):
 def medianmonthRain(data):
     #plot median of rainfall group by month
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
+    data['mean'] = data.mean(axis=1)
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
+    data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
-
-    data_monthmedian=DataFrame(data.groupby(data['months'])[data.columns[2]].median()).reset_index()
-
-
-    plt.bar(data_monthmedian.months,data_monthmedian[data_monthmedian.columns[2]])
+    data=data.sort_values(by=['year'])
+    #print(data.sort_values(by=['months']))
+    
+    #data_monthmedian=DataFrame(data.groupby(data['months'])['mean'].median()).reset_index()
+    data_monthmedian=DataFrame(data.groupby([data['month'],data['months']])[data.columns[6]].median()).reset_index()
+    plt.bar(data_monthmedian.months,data_monthmedian[data.columns[6]])
     plt.xlabel('months')
     plt.ylabel('Rainfall (m/s)')
     plt.title("Median of Month")

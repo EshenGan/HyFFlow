@@ -4,6 +4,7 @@ import numpy as np
 from matplotlib import gridspec
 from tkinter.filedialog import askopenfile
 import datetime
+
 import matplotlib
 matplotlib.use('TkAgg')
 
@@ -27,14 +28,14 @@ def _pandas_converters():
 root = tk.Tk()
 root.geometry("500x200")
 
-fig ,ax= plt.subplots(figsize=(15,6))
+fig ,ax= plt.subplots(figsize=(12,6))
 
 t = np.arange(0.0,3.0,0.01)
 s = np.sin(np.pi*t)
 plt.plot(t,s)
 
 data = pd.read_excel('Telok Buing Discharge.xlsx')
-
+data2=pd.read_excel('monthlyrainfall.xlsx')
 
 
 def flood_curve():
@@ -56,13 +57,18 @@ def hydro_graph():
     new_window()
     plt.clf() # clear plot first
     g = gridspec.GridSpec(2, 1, height_ratios=[1, 2])
-    pf.hydrograph(data,g)
+    pf.hydrograph(data,data2,g)
 
 
 def medianDischarge():
     new_window()
     plt.clf() # clear plot first
     pf.medianmonthDis(data)
+
+def median_monthRain():
+    new_window()
+    plt.clf() # clear plot first
+    pf.medianmonthRain(data2)
 
 
 def update():
@@ -95,6 +101,7 @@ tk.Button(root,text='flow curve',command=flow_curve).grid(row=3,column=1)
 tk.Button(root,text='Hydrograph Only',command=hydroOnly).grid(row=4,column=1)
 tk.Button(root,text='Hydrograph',command=hydro_graph).grid(row=5,column=1)
 tk.Button(root,text='Median Discharge',command=medianDischarge).grid(row=6,column=1)
+tk.Button(root,text='Median RainFall',command=median_monthRain).grid(row=7,column=1)
 tk.Button(root,text='Quit',command=realquit).grid(row=2,column=0)
 
 root.mainloop()
