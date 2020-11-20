@@ -100,7 +100,8 @@ def hydrographOnly(df):
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
     dfmean=DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean()).reset_index()
-    try1=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean(),'b-', label='median')#plot monthly mean
+    print(dfmean)
+    try1=plt.plot(dfmean[dfmean.columns[0]],dfmean[dfmean.columns[1]],'b-', label='median')#plot monthly mean
     try2=plt.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(10).mean(),'r', label='moving average')#plot moving average 
 
     plt.ylabel(df.columns[1], color='b')
@@ -169,6 +170,8 @@ def medianmonthRain(data,g):
         plt.xlabel('months')
         plt.ylabel('Rainfall (m/s)')
         plt.title("Median of Month")
+        data.drop(columns=['month', 'months','year'])
+        
     else:
         data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
         data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
@@ -179,6 +182,8 @@ def medianmonthRain(data,g):
         plt.xlabel('months')
         plt.ylabel('Rainfall (m/s)')
         plt.title("Median of Month of "+data.columns[g])
+        data.drop(columns=['month', 'months','year'])
+        
 
 
 
