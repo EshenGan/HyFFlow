@@ -9,10 +9,9 @@ matplotlib.use('TkAgg')
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
-from pandas.plotting import register_matplotlib_converters
 from pandas import DataFrame
 
-fig, ax = plt.subplots(figsize=(15,6))
+
 
 
 def flowplot(data):
@@ -153,23 +152,33 @@ def medianmonthDis(data):
     plt.title("Median of Month")
 
     
-def medianmonthRain(data):
-    #plot median of rainfall group by month
-    data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
-    data['mean'] = data.mean(axis=1)
-    #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
-    data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
-    data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
-    data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
-    data=data.sort_values(by=['year'])
-    #print(data.sort_values(by=['months']))
+def medianmonthRain(data,g):
+    if g==0:
+        #plot median of rainfall group by month
+        data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
+        data['mean'] = data.mean(axis=1)
+        #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
+        data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
+        data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
+        data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
+        #print(data.sort_values(by=['months']))
     
-    #data_monthmedian=DataFrame(data.groupby(data['months'])['mean'].median()).reset_index()
-    data_monthmedian=DataFrame(data.groupby([data['month'],data['months']])[data.columns[6]].median()).reset_index()
-    plt.bar(data_monthmedian.months,data_monthmedian[data.columns[6]])
-    plt.xlabel('months')
-    plt.ylabel('Rainfall (m/s)')
-    plt.title("Median of Month")
+        #data_monthmedian=DataFrame(data.groupby(data['months'])['mean'].median()).reset_index()
+        data_monthmedian=DataFrame(data.groupby([data['month'],data['months']])['mean'].median()).reset_index()
+        plt.bar(data_monthmedian.months,data_monthmedian['mean'])
+        plt.xlabel('months')
+        plt.ylabel('Rainfall (m/s)')
+        plt.title("Median of Month")
+    else:
+        data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
+        data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))#add new row month with month name January etc
+        data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
+        data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
+        data_monthmedian=DataFrame(data.groupby([data['month'],data['months']])[data.columns[g]].median()).reset_index()
+        plt.bar(data_monthmedian.months,data_monthmedian[data.columns[g]])
+        plt.xlabel('months')
+        plt.ylabel('Rainfall (m/s)')
+        plt.title("Median of Month of "+data.columns[g])
 
 
 
