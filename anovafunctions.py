@@ -67,7 +67,7 @@ def barchart(dataf):
     #plotting bar chart
     df1 = dataf.groupby(dataf.columns[0]).mean()
     colors = [plt.cm.Paired(np.arange(len(df1)))]
-    df1.plot(kind = 'bar', ax = ax1, color = colors)
+    df1.plot(kind = 'bar', ax = ax1,  legend = False, color = colors)
     
     # cmap = dict(zip(dataf.rainfallstations, colors[0]))
     # patches = [Patch(color = v, label = k) for k, v in cmap.items()]
