@@ -3,6 +3,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter import ttk, filedialog, messagebox
 import pandas as pd
 import analysis1 as ty
+import anova as an
 from pandas import DataFrame
 
 root = Tk()
@@ -246,6 +247,9 @@ Visualization_menu.add_checkbutton(label="Flow duration " , command=lambda:ty.fl
 Visualization_menu.add_checkbutton(label="Flood frequency" ,  command=lambda:ty.flood_curve(root,df))
 Visualization_menu.add_checkbutton(label="Median Discharge" ,  command=lambda:ty.medianDischarge(root,df))
 Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:ty.median_Rain(root,df))
+Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda:an.anovaa(df,root))
+Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:an.posthoc(df,root))
+Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:an.barchart(df,root))
 Visualization_menu.add_checkbutton(label="Baseflow diagram" , command=Output)
 Visualization_menu.add_checkbutton(label="Plots to show of flow seasonality" , command=Output)
 Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=Output)
