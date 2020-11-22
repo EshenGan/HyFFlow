@@ -65,7 +65,7 @@ def barchart(dataf):
     ax1.set_title('Mean Chart')
 
     #plotting bar chart
-    df1 = dataf.groupby('rainfallstations').mean()
+    df1 = dataf.groupby(dataf.columns[0]).mean()
     colors = [plt.cm.Paired(np.arange(len(df1)))]
     df1.plot(kind = 'bar', ax = ax1, color = colors)
     

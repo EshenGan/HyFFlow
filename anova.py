@@ -14,8 +14,10 @@ import matplotlib.pyplot as plt
 from pandas import DataFrame
 
 def anovaa(df, root):
-    dataf = pd.melt(df.reset_index(), value_vars = ['Gaat Baleh', 'Kapit New Headworks', 'Nanga Melatai', 'Nanga Balang', 'Nanga Tiau', 'Nanga Entawau', 'Nanga Merit'])
+    dataf = pd.melt(df.reset_index(), value_vars = df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+    indexname = dataf[dataf['rainfallstations'] == 'Date'].index
+    dataf.drop(indexname, inplace = True)
     dataf['rainfall'].replace('', np.nan, inplace = True)
     dataf.dropna(subset = ['rainfall'], inplace = True)
     
@@ -31,8 +33,10 @@ def anovaa(df, root):
     an.anova_table(aov_table)
 
 def posthoc(df, root):
-    dataf = pd.melt(df.reset_index(), value_vars = ['Gaat Baleh', 'Kapit New Headworks', 'Nanga Melatai', 'Nanga Balang', 'Nanga Tiau', 'Nanga Entawau', 'Nanga Merit'])
+    dataf = pd.melt(df.reset_index(), value_vars = df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+    indexname = dataf[dataf['rainfallstations'] == 'Date'].index
+    dataf.drop(indexname, inplace = True)
     dataf['rainfall'].replace('', np.nan, inplace = True)
     dataf.dropna(subset = ['rainfall'], inplace = True)
 
@@ -43,8 +47,11 @@ def posthoc(df, root):
     an.anova_posthoc(dataf)
 
 def barchart(df, root):
-    dataf = pd.melt(df.reset_index(), value_vars = ['Gaat Baleh', 'Kapit New Headworks', 'Nanga Melatai', 'Nanga Balang', 'Nanga Tiau', 'Nanga Entawau', 'Nanga Merit'])
+    df.drop(["Date"], axis = 1, inplace = False)
+    dataf = pd.melt(df.reset_index(), value_vars = df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+    indexname = dataf[dataf['rainfallstations'] == 'Date'].index
+    dataf.drop(indexname, inplace = True)
     dataf['rainfall'].replace('', np.nan, inplace = True)
     dataf.dropna(subset = ['rainfall'], inplace = True)
 
