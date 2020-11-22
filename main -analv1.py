@@ -37,20 +37,14 @@ df=""
 df2=""
 
 tv1 = ttk.Treeview(frame1)  # This is the Treeview Widget
-column_list_account = ["date/time", "rainfall station", "rainfall"]  # These are our headings
-tv1['columns'] = column_list_account  # We assign the column list to the widgets columns
-tv1["show"] = "headings"  # this hides the default column..
+tv1.place(relheight=1,relwidth=1)
 
-for column in column_list_account:  # foreach column
-    tv1.heading(column, text=column)  # let the column heading = column name
-    tv1.column(column, width=50)  # set the columns size to 50px
-tv1.place(relheight=1, relwidth=1)  # set the height and width of the widget to 100% of its container (frame1).
-treescroll = Scrollbar(frame1)  #  scrollbar
-treescroll.configure(command=tv1.yview)  # make it vertical
-tv1.configure(yscrollcommand=treescroll.set)  #scrollbar for the Treeview Widget
-treescroll.pack(side="right", fill="y")  # scrollbar fill the yaxis of the Treeview widget
+treescrolly=Scrollbar(frame1,orient="vertical",command=tv1.yview)
+treescrollx=Scrollbar(frame1,orient="horizontal",command=tv1.xview)
 
-
+tv1.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
+treescrollx.pack(side="bottom",fill="x")
+treescrolly.pack(side="right",fill="y")
 
 
 
@@ -61,24 +55,45 @@ treescroll.pack(side="right", fill="y")  # scrollbar fill the yaxis of the Treev
 
 def  Load_excel_data():
   #if your file is valid this will load the file into the treeview
-  
+    file_path = label2_file["text"]
+    file_path2 = label3_file["text"]
     try:
         global df
         global df2
-        excel_filename = r"{}".format(label2_file['text'])
-        df = pd.read_excel(excel_filename)
-        excel_filename = r"{}".format(label3_file['text'])
-        df2 = pd.read_excel(excel_filename)
+        excel_filename = r"{}".format(file_path)
+        if excel_filename[-4:] == ".csv":
+            df = pd.read_csv(excel_filename)
+        else:
+            df = pd.read_excel(excel_filename)
+
+        excel_filename = r"{}".format(file_path2)
+        if excel_filename[-4:] == ".csv":
+            df2 = pd.read_csv(excel_filename)
+        else:
+            df2 = pd.read_excel(excel_filename)
 
 
     except ValueError:
-        messagebox.showerror("Information", "The File you have entered is invalid")
+        messagebox.showerror("Information", "The file you have chosen is invalid")
+        return None
+    except FileNotFoundError:
+        messagebox.showerror("Information", f"No such file as {file_path}")
         return None
 
-    df_rows = df.to_numpy().tolist()  # turns the dataframe into a list of lists
+    clear_data()
+    tv1["column"] = list(df.columns)
+    tv1["show"] = "headings"
+    for column in tv1["columns"]:
+        tv1.heading(column, text=column) 
+
+    df_rows = df.to_numpy().tolist() 
     for row in df_rows:
-        tv1.insert("", "end", values=row)  # inserts each list into the treeview
-    
+        tv1.insert("", "end", values=row) 
+    return None
+
+def clear_data():
+    tv1.delete(*tv1.get_children())
+    return None
 
 
 #If user will click on button yes ,it will ask for file name which u want for data cleaning 
@@ -177,7 +192,9 @@ def ImportRainfall():
 
     b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
     b1.place(x=130, y=150)
-
+    def Continue():
+        messagebox.showinfo("Innformation","file is imported successfully ")
+        NewWindow.destroy()
     b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
 
     b2.place(x=280, y=150)
@@ -201,14 +218,12 @@ def ImportDischarge():
 
     b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
     b1.place(x=130, y=150)
-
+    def Continue():
+        messagebox.showinfo("Innformation","file is imported successfully ")
+        NewWindow.destroy()
     b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
     b2.place(x=280, y=150)
-
-
-def Continue():
-  
-    messagebox.showinfo("Innformation","file is imported successfully ")
+    
 
 
 
