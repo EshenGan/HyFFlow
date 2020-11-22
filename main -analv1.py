@@ -24,14 +24,17 @@ file_frame.place(height=800, width=280, x=0, y=0)
 
 label2_file =ttk.Label(file_frame, text="")
 label2_file.place(x=0, y=0)
+
+label3_file =ttk.Label(file_frame, text="")
+label3_file.place(x=0, y=50)
 #button for loading saved excel data
 button2 = Button(root, text="Load File", command=lambda: Load_excel_data())
 button2.place(x=100, y=0)
 #excel data frame
 frame1 = LabelFrame(root, text="Excel Data")
 frame1.place(height=800, width=1080 ,x=280,y=0)
-
-
+df=""
+df2=""
 
 tv1 = ttk.Treeview(frame1)  # This is the Treeview Widget
 column_list_account = ["date/time", "rainfall station", "rainfall"]  # These are our headings
@@ -61,8 +64,11 @@ def  Load_excel_data():
   
     try:
         global df
+        global df2
         excel_filename = r"{}".format(label2_file['text'])
         df = pd.read_excel(excel_filename)
+        excel_filename = r"{}".format(label3_file['text'])
+        df2 = pd.read_excel(excel_filename)
 
 
     except ValueError:
@@ -155,7 +161,31 @@ def file():
 
   label2_file.configure(text=filename3)
 
-def ImportExcel():
+def ImportRainfall():
+    filename2 = filedialog.askopenfilename(initialdir="/",
+                                           title="Select A File",
+                                           filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
+    label3_file.configure(text=filename2)
+
+    NewWindow = Toplevel(root)
+    NewWindow.title("HyFFlow")
+    NewWindow.geometry("500x200")
+    NewWindow.resizable(0, 0)
+
+    label_question = Label(NewWindow, text="Would you like to scan through the data in the Excel Sheet")
+    label_question.place(x=100, y=69)
+
+    b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
+    b1.place(x=130, y=150)
+
+    b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
+
+    b2.place(x=280, y=150)
+
+
+
+
+def ImportDischarge():
     filename2 = filedialog.askopenfilename(initialdir="/",
                                            title="Select A File",
                                            filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
@@ -172,9 +202,14 @@ def ImportExcel():
     b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
     b1.place(x=130, y=150)
 
-    b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=file)
-
+    b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
     b2.place(x=280, y=150)
+
+
+def Continue():
+  
+    messagebox.showinfo("Innformation","file is imported successfully ")
+
 
 
 
@@ -214,7 +249,12 @@ root.config(menu=menu)
 filemenu = Menu(menu, tearoff=0)
 menu.add_cascade(label="File", menu=filemenu)
 filemenu.add_command(label="Open Graph", command=OpenFile)
-filemenu.add_command(label="Import Excel",command=ImportExcel)
+
+Importexcel_menu = Menu(filemenu, tearoff=0)
+Importexcel_menu.add_command(label="Discharge", command=ImportDischarge)
+Importexcel_menu.add_command(label="Rainfall", command=ImportRainfall)
+
+filemenu.add_cascade(label="Import Excel", menu=Importexcel_menu)
 
 #submenu for switching Menu
 Switchpackage_menu = Menu(filemenu, tearoff=0)
@@ -242,14 +282,14 @@ menu.add_cascade(label="Analysis", menu=Analysismenu)
 #SubMenu for selecting visualization
 Visualization_menu = Menu(Analysismenu, tearoff=0)
 
-Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:ty.hydroOnly(root,df))
+Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:ty.hydro_graph(root,df,df2))
 Visualization_menu.add_checkbutton(label="Flow duration " , command=lambda:ty.flow_curve(root,df))
 Visualization_menu.add_checkbutton(label="Flood frequency" ,  command=lambda:ty.flood_curve(root,df))
 Visualization_menu.add_checkbutton(label="Median Discharge" ,  command=lambda:ty.medianDischarge(root,df))
-Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:ty.median_Rain(root,df))
-Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda:an.anovaa(df,root))
-Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:an.posthoc(df,root))
-Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:an.barchart(df,root))
+Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:ty.median_Rain(root,df2))
+Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda:an.anovaa(df2,root))
+Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:an.posthoc(df2,root))
+Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:an.barchart(df2,root))
 Visualization_menu.add_checkbutton(label="Baseflow diagram" , command=Output)
 Visualization_menu.add_checkbutton(label="Plots to show of flow seasonality" , command=Output)
 Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=Output)
