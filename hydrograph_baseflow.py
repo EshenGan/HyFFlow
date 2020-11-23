@@ -13,24 +13,8 @@ from sklearn.impute import SimpleImputer
 from pandas import DataFrame
 
 fig, ax = plt.subplots(figsize=(14, 10))
-# canvas = FigureCanvasTkAgg(fig, master=root)
-# plot_widget = canvas.get_tk_widget()
 
-'''
-# read xlsx files
-# def open_file():
-#file = askopenfile(mode='r', filetypes=[('xlsx files', '*.xlsx')])
-#if file is not None:
-    # print(file.name)
-#read_file = pd.read_excel('Book3.xlsx')
-#read_file.to_csv('Book3.csv', index=None, header=True)
 
-#reading for s5 and s6  df= discharge df2= rainfall
-    #df = pd.read_excel('Telok Buing Discharge.xlsx', index_col=0)
-    #df['Discharge (m3/s)'] = df['Discharge (m3/s)'].astype('float64')
-    #df.info()
-    #print(df.dtypes)
-'''
 def baseflowdiagram(df):
     # figure s5
     df['Discharge (m3/s)'] = df['Discharge (m3/s)'].astype('float64')
@@ -98,51 +82,3 @@ def linear_regression(df,df2):
     plt.plot(lx, yl, color='red')
     plt.legend()
 
-    '''
-    # plt.show()
-   # fig.savefig('blah.png', transparent=True)
-
-    # xvalue = pd.to_datetime(df[df.columns[0]])
-       # yvalue = df.loc[df['Discharge (m3/s)']>5000.000000]
-       # yvalue = yvalue.astype(np.float)
-       # ax.bar(xvalue,yvalue)
-
-       # for index , row in df.iterrows():
-        #    print(index, row['Discharge (m3/s)'])
-        #x = df['Date/Time']
-        #y = df['Discharge (m3/s)']
-        #df2 = df.loc[df['Discharge (m3/s)']>5000]
-        #x1 = df2['Date/Time']
-        #y1 = df2['Discharge (m3/s)']
-        # print(type(y1))
-        # bar chart
-        # plt.bar(x1,y1, width=1)
-        # plt.margins(0,0)
-        # plt.title('baseflow diagram',fontdict={'fontsize':'13', 'color':'red'}, loc='left')
-        # plt.xlabel('Date')
-        # plt.ylabel('Discharge')
-
- tk.Button(root, text='Open', command=open_file).grid(row=2, column=1)
-
-
- def update():
-    fig.canvas.draw()
-
-
- def _quit():
-    root.quit()
-    root.destroy()  # correction: to clean the window when exit
-
-# def save():
-    plt.savefig('mygrapgh.png',dpi=300)
-
-plot_widget.grid(row=0, column=0)
-# update button
-tk.Button(root, text="Update", command=update).grid(row=1, column=0)
-# quit button
-tk.Button(root, text='Quit', command=_quit).grid(row=2, column=0)
-# save button
-tk.Button(root, text='Save', command=save).grid(row=2, column=2)
-
-root.mainloop()
-'''
