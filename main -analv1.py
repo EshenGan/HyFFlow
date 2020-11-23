@@ -4,6 +4,7 @@ from tkinter import ttk, filedialog, messagebox
 import pandas as pd
 import analysis1 as ty
 import anova as an
+import hydrograph_baseflow as hb
 from pandas import DataFrame
 
 root = Tk()
@@ -305,9 +306,10 @@ Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:ty.
 Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda:an.anovaa(df2,root))
 Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:an.posthoc(df2,root))
 Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:an.barchart(df2,root))
-Visualization_menu.add_checkbutton(label="Baseflow diagram" , command=Output)
+Visualization_menu.add_checkbutton(label="Baseflow diagram" , command= lambda:hb.baseflowdiagram(df,root))
+Visualization_menu.add_checkbutton(label="Hydrograph with Baseflow" , command=lambda:hb.hydrograph_baseflow(df,root))
 Visualization_menu.add_checkbutton(label="Plots to show of flow seasonality" , command=Output)
-Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=Output)
+Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=lambda:hb.linear_regression(df,df2,root))
 Visualization_menu.add_separator()
 Visualization_menu.add_checkbutton(label="select all" , command=All)
 
