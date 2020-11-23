@@ -12,10 +12,11 @@ from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from pandas import DataFrame
 
-fig, ax = plt.subplots(figsize=(14, 10))
+
 
 
 def baseflowdiagram(df):
+    fig, ax = plt.subplots(figsize=(14, 10))
     # figure s5
     df['Discharge (m3/s)'] = df['Discharge (m3/s)'].astype('float64')
     ax.bar(df.index.values, df['Discharge (m3/s)'],1.85)
@@ -35,6 +36,7 @@ def baseflowdiagram(df):
 
 
 def hydrograph_baseflow(df):
+    fig, ax = plt.subplots(figsize=(14, 10))
     # figure s6
     dframe = df.head(200)
     ax.plot(dframe.index.values, dframe['Discharge (m3/s)'],color='blue', linestyle='-')
