@@ -3,16 +3,20 @@ import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 import numpy as np
+
 from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')
+
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from pandas import DataFrame
 
+ax=""
 def new_window(root):
+    global ax
     fig ,ax= plt.subplots(figsize=(14,10))
     Top=tk.Toplevel(root)
     canvas = FigureCanvasTkAgg(fig, master=Top)
@@ -59,7 +63,7 @@ def hydrograph_baseflow(df,root):
     plt.setp(ax.get_xticklabels(), rotation=45)
     plt.tight_layout()
     df4 = dframe['Discharge (m3/s)']
-    var1 = df4[argrelextrema(df4.to_numpy(dtype='float64', na_value=np.nan), np.less)[0]]
+    var1 = df4[argrelextrema(df4.to_numpy( na_value=np.nan,dtype='float64'), np.less)[0]]
     var1.interpolate()
     ax.plot(var1.index.values,var1, color='red',label='baseflow')
     plt.legend()
