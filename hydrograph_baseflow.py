@@ -24,7 +24,7 @@ def new_window(root):
     plot_widget.grid(row=0, column=0)
 
 
-def baseflowdiagram(df):
+def baseflowdiagram(df,root):
     new_window(root)
     plt.clf() # clear plot first
     # figure s5
@@ -45,7 +45,7 @@ def baseflowdiagram(df):
 
 
 
-def hydrograph_baseflow(df):
+def hydrograph_baseflow(df,root):
     new_window(root)
     plt.clf() # clear plot first
     # figure s6
@@ -65,7 +65,7 @@ def hydrograph_baseflow(df):
     plt.legend()
 
 
-def linear_regression(df,df2):
+def linear_regression(df,df2,root):
     new_window(root)
     plt.clf() # clear plot first
     # read and group discharge by month
