@@ -34,8 +34,8 @@ button2.place(x=100, y=0)
 #excel data frame
 frame1 = LabelFrame(root, text="Excel Data")
 frame1.place(height=800, width=1080 ,x=280,y=0)
-df=""
-df2=""
+df=DataFrame()
+df2=DataFrame()
 
 tv1 = ttk.Treeview(frame1)  # This is the Treeview Widget
 tv1.place(relheight=1,relwidth=1)

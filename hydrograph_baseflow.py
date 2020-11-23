@@ -13,11 +13,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from pandas import DataFrame
+from matplotlib.figure import Figure
 
-ax=""
+fig = Figure(figsize=(12,6))
+ax= fig.add_subplot()
 def new_window(root):
-    global ax
-    fig ,ax= plt.subplots(figsize=(14,10))
+
+    
     Top=tk.Toplevel(root)
     canvas = FigureCanvasTkAgg(fig, master=Top)
     plot_widget = canvas.get_tk_widget()
@@ -28,12 +30,17 @@ def new_window(root):
     plot_widget.grid(row=0, column=0)
 
 
-def baseflowdiagram(df,root):
+def baseflowdiagram(data,root):
+    df=data.copy()
     new_window(root)
+    ax.cla()
     plt.clf() # clear plot first
     # figure s5
+    df[df.columns[0]]= pd.to_datetime(df[df.columns[0]])
+    df.set_index(df.columns[0], inplace=True)
+
     df['Discharge (m3/s)'] = df['Discharge (m3/s)'].astype('float64')
-    ax.bar(df.index.values, df['Discharge (m3/s)'],1.85)
+    ax.bar(df.index.values, df['Discharge (m3/s)'],1.85,label="discharge",snap=False)
     ax.set(xlabel ="Date/Time",ylabel = "Discharge(m3/s)",title = "Hydrograph")
     ax.set_xlim(min(df.index.values), max(df.index.values))
     # ax.set_ylim(0,max(df['Discharge (m3/s)']))
@@ -44,17 +51,22 @@ def baseflowdiagram(df,root):
     dfd = df['Discharge (m3/s)']
     var = dfd[argrelextrema(dfd.to_numpy(dtype='float64', na_value=np.nan), np.less)[0]]
     var.interpolate()
-    ax.plot(var.index.values,var, color='red')
-    plt.legend()
+    ax.plot(var.index.values,var, color='red',label="baseflow")
+    ax.legend()
 
 
 
-def hydrograph_baseflow(df,root):
+def hydrograph_baseflow(data,root):
+    df=data.copy()
     new_window(root)
+    ax.cla()
     plt.clf() # clear plot first
     # figure s6
+    df[df.columns[0]]= pd.to_datetime(df[df.columns[0]])
+    df.set_index(df.columns[0], inplace=True)
+
     dframe = df.head(200)
-    ax.plot(dframe.index.values, dframe['Discharge (m3/s)'],color='blue', linestyle='-')
+    ax.plot(dframe.index.values, dframe['Discharge (m3/s)'],color='blue', linestyle='-',label='discharge')
     ax.set(xlabel ="Date/Time",ylabel = "Discharge(m3/s)",title = "Hydrograph")
     ax.set_xlim(min(dframe.index.values), max(dframe.index.values))
     # ax.set_ylim(0,max(df['Discharge (m3/s)']))
@@ -66,12 +78,16 @@ def hydrograph_baseflow(df,root):
     var1 = df4[argrelextrema(df4.to_numpy( na_value=np.nan,dtype='float64'), np.less)[0]]
     var1.interpolate()
     ax.plot(var1.index.values,var1, color='red',label='baseflow')
-    plt.legend()
+    ax.legend()
 
 
-def linear_regression(df,df2,root):
+def linear_regression(data,data2,root):
+    df=data.copy()
+    df2=data2.copy()
     new_window(root)
+    plt.cla()
     plt.clf() # clear plot first
+    
     # read and group discharge by month
     df[df.columns[0]]= pd.to_datetime(df[df.columns[0]])
     dataf= DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean())
@@ -97,7 +113,7 @@ def linear_regression(df,df2,root):
     yl = lr.predict(lx)
 
     #visualize
-    plt.scatter(lx, ly)
-    plt.plot(lx, yl, color='red')
-    plt.legend()
+    ax.scatter(lx, ly,label='x/y')
+    ax.plot(lx, yl, color='red',label="best fit line")
+    ax.legend()
 
