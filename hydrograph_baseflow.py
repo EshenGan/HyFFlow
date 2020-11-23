@@ -1,4 +1,4 @@
-
+import tkinter as tk
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
@@ -12,11 +12,21 @@ from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
 from pandas import DataFrame
 
-
+def new_window(root):
+    fig ,ax= plt.subplots(figsize=(14,10))
+    Top=tk.Toplevel(root)
+    canvas = FigureCanvasTkAgg(fig, master=Top)
+    plot_widget = canvas.get_tk_widget()
+    def _quit():
+        plt.clf() 
+        Top.destroy()
+    tk.Button(Top, text = 'Quit', command = _quit).grid(row=2, column=0)   
+    plot_widget.grid(row=0, column=0)
 
 
 def baseflowdiagram(df):
-    fig, ax = plt.subplots(figsize=(14, 10))
+    new_window(root)
+    plt.clf() # clear plot first
     # figure s5
     df['Discharge (m3/s)'] = df['Discharge (m3/s)'].astype('float64')
     ax.bar(df.index.values, df['Discharge (m3/s)'],1.85)
@@ -36,7 +46,8 @@ def baseflowdiagram(df):
 
 
 def hydrograph_baseflow(df):
-    fig, ax = plt.subplots(figsize=(14, 10))
+    new_window(root)
+    plt.clf() # clear plot first
     # figure s6
     dframe = df.head(200)
     ax.plot(dframe.index.values, dframe['Discharge (m3/s)'],color='blue', linestyle='-')
@@ -55,6 +66,8 @@ def hydrograph_baseflow(df):
 
 
 def linear_regression(df,df2):
+    new_window(root)
+    plt.clf() # clear plot first
     # read and group discharge by month
     df[df.columns[0]]= pd.to_datetime(df[df.columns[0]])
     dataf= DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean())
