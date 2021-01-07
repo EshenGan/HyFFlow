@@ -60,20 +60,27 @@ def package1(menuroot):
     #if your file is valid this will load the file into the treeview
         file_path = label2_file["text"]
         file_path2 = label3_file["text"]
+        global df 
+        global df2 
+        df=None
+        df2=None
         try:
-            global df
-            global df2
-            excel_filename = r"{}".format(file_path)
-            if excel_filename[-4:] == ".csv":
-                df = pd.read_csv(excel_filename)
-            else:
-                df = pd.read_excel(excel_filename)
-
-            excel_filename = r"{}".format(file_path2)
-            if excel_filename[-4:] == ".csv":
-                df2 = pd.read_csv(excel_filename)
-            else:
-                df2 = pd.read_excel(excel_filename)
+            
+            #if filepath fpr discharge is not empty only load
+            if file_path!="":
+                excel_filename = r"{}".format(file_path)
+                if excel_filename[-4:] == ".csv":
+                    df = pd.read_csv(excel_filename)
+                else:
+                    df = pd.read_excel(excel_filename)
+            #if filepath for rainfall is not empty only load
+            if file_path2 !="":
+                excel_filename2 = r"{}".format(file_path2)
+            
+                if excel_filename2[-4:] == ".csv":
+                    df2 = pd.read_csv(excel_filename2)
+                else:
+                    df2 = pd.read_excel(excel_filename2)
 
 
         except ValueError:
@@ -84,16 +91,31 @@ def package1(menuroot):
             return None
 
         clear_data()
-        tv1["column"] = list(df.columns)
-        tv1["show"] = "headings"
-        for column in tv1["columns"]:
-            tv1.heading(column, text=column) 
+        #this part need to change to tabbing
+        #################################################
+        #if discharge is loaded 
+        if file_path!="":
+            tv1["column"] = list(df.columns)
+            tv1["show"] = "headings"
+            for column in tv1["columns"]:
+                tv1.heading(column, text=column) 
 
-        df_rows = df.to_numpy().tolist() 
-        for row in df_rows:
-            tv1.insert("", "end", values=row) 
-        return None
+            df_rows = df.to_numpy().tolist() 
+            for row in df_rows:
+                tv1.insert("", "end", values=row) 
+            return None
+        #if only load rainfall
+        elif file_path2 !="":
+            tv1["column"] = list(df2.columns)
+            tv1["show"] = "headings"
+            for column in tv1["columns"]:
+                tv1.heading(column, text=column) 
 
+            df_rows = df2.to_numpy().tolist() 
+            for row in df_rows:
+                tv1.insert("", "end", values=row) 
+            return None
+        #################################################
     def clear_data():
         tv1.delete(*tv1.get_children())
         return None
@@ -332,6 +354,6 @@ def package1(menuroot):
 
     def quit_me():
         root.destroy()
-        
-        menuroot.deiconify()
+        menuroot.quit()
+
     root.protocol("WM_DELETE_WINDOW", quit_me)
