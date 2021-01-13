@@ -8,12 +8,16 @@ import hydrograph_baseflow as hb
 from pandas import DataFrame
 
 
+
+
+
 df=DataFrame()
 df2=DataFrame()
 def package1(menuroot):
     menuroot.withdraw()
     root=Toplevel(menuroot)
     root.geometry("733x566")
+    root.state('zoomed')
     def OpenFile():
         filename2 = filedialog.askopenfilename(initialdir="/",
                                           title="Select A ZIP",
@@ -24,22 +28,44 @@ def package1(menuroot):
 
     #code for uploading saved data file
     file_frame = LabelFrame(root, text="Open File")
-    file_frame.place(height=800, width=280, x=0, y=0)
+    file_frame.place(height=800, width=310, x=0, y=0)
 
     label2_file =ttk.Label(file_frame, text="")
-    label2_file.place(x=0, y=0)
+    label2_file.place(x=0, y=10)
 
     label3_file =ttk.Label(file_frame, text="")
     label3_file.place(x=0, y=50)
     #button for loading saved excel data
     button2 = Button(root, text="Load File", command=lambda: Load_excel_data())
     button2.place(x=100, y=0)
-    #excel data frame
-    frame1 = LabelFrame(root, text="Excel Data")
-    frame1.place(height=800, width=1080 ,x=280,y=0)
     
+    #tabs
+    my_notebook=ttk.Notebook(root)
+    my_notebook.place(x=310,y=0, height=785, width=1230)
+   
+    #excel data frame 1
+    frame1 = LabelFrame(my_notebook,bg='white')
+    frame1.pack(fill="both", expand=1)
+    
+    #excel data frame 2`
+    frame2 = LabelFrame(my_notebook,bg='white')
+    frame2.pack(fill="both",expand=1)
 
-    tv1 = ttk.Treeview(frame1)  # This is the Treeview Widget
+    
+    my_notebook.add(frame1,text="Discharge")
+    my_notebook.add(frame2,text="Rainfall")
+    
+    
+    #hide tabs before importing 
+    my_notebook.hide(0)
+    my_notebook.hide(1)
+    
+          
+    
+    
+    
+    # This is the Treeview Widget for frame 1
+    tv1 = ttk.Treeview(frame1)  
     tv1.place(relheight=1,relwidth=1)
 
     treescrolly=Scrollbar(frame1,orient="vertical",command=tv1.yview)
@@ -50,9 +76,23 @@ def package1(menuroot):
     treescrolly.pack(side="right",fill="y")
 
 
+    # This is the Treeview Widget for frame 2
+    tv2 = ttk.Treeview(frame2)  
+    tv2.place(relheight=1,relwidth=1)
+
+    treescrolly=Scrollbar(frame2,orient="vertical",command=tv2.yview)
+    treescrollx=Scrollbar(frame2,orient="horizontal",command=tv2.xview)
+
+    tv2.configure(xscrollcommand=treescrollx.set,yscrollcommand=treescrolly.set)
+    treescrollx.pack(side="bottom",fill="x")
+    treescrolly.pack(side="right",fill="y")
 
 
+   
 
+   
+      
+    
 
 #function for loading excel data
 
@@ -93,8 +133,28 @@ def package1(menuroot):
         clear_data()
         #this part need to change to tabbing
         #################################################
-        #if discharge is loaded 
-        if file_path!="":
+        #if only rainfall load
+        if file_path2 !="":
+              my_notebook.add(frame2,text="Rainfall")
+              my_notebook.select(1)
+              tv2["column"] = list(df2.columns)
+              tv2["show"] = "headings"
+              for column in tv2["columns"]:
+                  tv2.heading(column, text=column) 
+
+              df_rows = df2.to_numpy().tolist() 
+              for row in df_rows:
+                  tv2.insert("", "end", values=row) 
+              return None 
+              
+               
+           
+        
+        #if Discharge is loaded
+        
+        elif file_path !="":
+            my_notebook.add(frame1,text="Discharge")
+            my_notebook.select(0)
             tv1["column"] = list(df.columns)
             tv1["show"] = "headings"
             for column in tv1["columns"]:
@@ -104,32 +164,18 @@ def package1(menuroot):
             for row in df_rows:
                 tv1.insert("", "end", values=row) 
             return None
-        #if only load rainfall
-        elif file_path2 !="":
-            tv1["column"] = list(df2.columns)
-            tv1["show"] = "headings"
-            for column in tv1["columns"]:
-                tv1.heading(column, text=column) 
-
-            df_rows = df2.to_numpy().tolist() 
-            for row in df_rows:
-                tv1.insert("", "end", values=row) 
-            return None
+             
+             
+              
+          
+            
         #################################################
     def clear_data():
-        tv1.delete(*tv1.get_children())
+        print("data")
         return None
 
 
-#If user will click on button yes ,it will ask for file name which u want for data cleaning 
-#and then after giving file name it will generate new popup window for data cleaning
-    def File_Dialog():
 
-        filename = filedialog.askopenfilename(initialdir="/",
-                                          title="Select A File",
-                                          filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
-        label_file.configure(text=filename)
-    
 
 
 
@@ -141,7 +187,13 @@ def package1(menuroot):
                 newWindow2.title("HyFFlow")
                 newWindow2.geometry("500x230")
                 newWindow2.resizable(0,0)
-             
+                
+                def File_Dialog():
+                     filename = filedialog.askopenfilename(initialdir="/",
+                                          title="Select A File",
+                                          filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
+                     label_file.configure(text=filename)
+                
             
 
                 label_name=Label(newWindow2,text="File Name: ")
@@ -156,50 +208,22 @@ def package1(menuroot):
                 label_file=Label(file_frame,text="",bg='white')
                 label_file.place(x=0,y=0)
 
-
-
+    
                 b3=Button(newWindow2,text="Browse",height='1',width=7,bg='lightblue',fg='white',font="bold",command=File_Dialog)
                 b3.place(x=393,y=69)
-
+               
+                
+                    
                 b4=Button(newWindow2,text="ok",height='1',width=7,bg='lightblue',fg='white',font="bold")
                 b4.place(x=200,y=190)
+               
+
+      
+
 
 
             
 
-
-
-            
-# function for importing file(after clicking import option it will generate popup window to ask question about data cleaning
-    def ImportFile():
-
-            NewWindow=Toplevel(root)
-            NewWindow.title("HyFFlow")
-            NewWindow.geometry("500x200")
-            NewWindow.resizable(0, 0)
-
-
-            label_question=Label(NewWindow,text="Would you like to scan through the data in filename")
-            label_question.place(x=100,y=69)
-
-
-            b1=Button(NewWindow,text="Yes",height=1,width=7,bg="lightblue",fg="white",font="bold",command=OpenNew)
-            b1.place(x=130,y=150)
-
-
-
-            b2=Button(NewWindow,text="No",height=1,width=7,bg="lightblue",fg="white",font="bold" ,command=file)
-
-            b2.place(x=280,y=150)
-
-
-#If  user will click on button no ,it will ask for file name for importing
-    def file():
-        filename3 = filedialog.askopenfilename(initialdir="/",
-                                          title="Select A File",
-                                          filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
-
-        label2_file.configure(text=filename3)
 
     def ImportRainfall():
         filename2 = filedialog.askopenfilename(initialdir="/",
