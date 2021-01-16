@@ -145,14 +145,14 @@ def package1(menuroot):
               df_rows = df2.to_numpy().tolist() 
               for row in df_rows:
                   tv2.insert("", "end", values=row) 
-              return None 
-              
                
+              
+        
            
         
         #if Discharge is loaded
         
-        elif file_path !="":
+        if file_path !="":
             my_notebook.add(frame1,text="Discharge")
             my_notebook.select(0)
             tv1["column"] = list(df.columns)
@@ -163,7 +163,7 @@ def package1(menuroot):
             df_rows = df.to_numpy().tolist() 
             for row in df_rows:
                 tv1.insert("", "end", values=row) 
-            return None
+            
              
              
               
