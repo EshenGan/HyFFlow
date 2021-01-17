@@ -241,14 +241,13 @@ def package1(menuroot):
         NewWindow.resizable(0, 0)
 
         if df.isnull().values.any():
-            label_question = Label(NewWindow, text="Would you like to remove NULL values?")
+            label_question = Label(NewWindow, text="Excel file contains NULL values, would you like to remove NULL values?")
             label_question.place(x=100, y=69)
             def RemoveNA():
                 df[colname].replace('', np.nan, inplace = True)
                 df.dropna(inplace = True)
                 messagebox.showinfo("Information","NULL values removed, file is imported successfully")
                 NewWindow.destroy()
-                print(df)
             b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=RemoveNA)
             b1.place(x=130, y=150)
 
