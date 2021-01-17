@@ -4,9 +4,8 @@ import main as mn
 
 root =Tk()
 root.title("HyFFlow")
-
-root.geometry("990x566")
-
+root.geometry("830x500")
+root.resizable(0, 0)
 
 theLabel=Label(root, text="Welcome to HyFFlow", fg='grey', font=("Pristina", 30))
 theLabel.place(x=60, y=50)
@@ -29,16 +28,16 @@ def OpenPackage4():
 
 
 b1 = Button(root, text = " Hydrograph Shape",height="5",width="40" ,bg="grey",fg = "white" ,command=lambda:mn.package1(root))
-b1.place(x=460,y=390)
+b1.place(x=100,y=280)
 
 b2 = Button(root, text = " Fundamentals of the Flow Regime ",height="5", width="40",bg ="grey",fg= "white" ,command=lambda:mn.package1(root))
-b2.place(x=460,y=290)
+b2.place(x=100,y=180)
 
 b3 = Button(root, text = " Flow Metrics",height="5",width="40",bg="grey" ,fg = "white",command=lambda:mn.package1(root))
-b3.place(x=800,y=290)
+b3.place(x=440,y=180)
 
 b4 = Button(root, text = " Long-term Trends on Flow and Rainfall Regimes",height="5",width="40",bg="grey" ,fg = "white", command=lambda:mn.package1(root))
-b4.place(x=800,y=390)
+b4.place(x=440,y=280)
 def quit_me():
     root.quit()
     root.destroy()
