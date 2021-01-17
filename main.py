@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter import ttk, filedialog, messagebox
 import pandas as pd
+import numpy as np
 import analysis1 as ty
 import anova as an
 import hydrograph_baseflow as hb
@@ -218,11 +219,48 @@ def package1(menuroot):
                 b4.place(x=200,y=190)
                
 
-      
+    def ScanFile():
 
+        file_path = label2_file["text"]
+        file_path2 = label3_file["text"]
+        global df
+        global scannum
 
+        if scannum == 1:
+            df = pd.read_excel(file_path)
+            colname = df.columns[1]
+        elif scannum == 2:
+            df = pd.read_excel(file_path2)
+            df = pd.melt(df.reset_index(), value_vars = df.columns.values)
+            df.columns = ['rainfallstations', 'rainfall']
+            colname = df.columns[1]
 
-            
+        NewWindow = Toplevel(root)
+        NewWindow.title("HyFFlow")
+        NewWindow.geometry("500x200")
+        NewWindow.resizable(0, 0)
+
+        if df.isnull().values.any():
+            label_question = Label(NewWindow, text="Would you like to remove NULL values?")
+            label_question.place(x=100, y=69)
+            def RemoveNA():
+                df[colname].replace('', np.nan, inplace = True)
+                df.dropna(inplace = True)
+                messagebox.showinfo("Information","NULL values removed, file is imported successfully")
+                NewWindow.destroy()
+                print(df)
+            b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=RemoveNA)
+            b1.place(x=130, y=150)
+
+            def NoRemove():
+                messagebox.showinfo("Information","Please import another excel file without NULL values")
+                NewWindow.destroy()
+            b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=NoRemove)
+            b2.place(x=280, y=150)
+        else:
+            messagebox.showinfo("Information", "Excel file contains no error data, file imported successfully")
+            NewWindow.destroy()
+
 
 
     def ImportRainfall():
@@ -239,7 +277,10 @@ def package1(menuroot):
         label_question = Label(NewWindow, text="Would you like to scan through the data in the Excel Sheet")
         label_question.place(x=100, y=69)
 
-        b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
+        global scannum
+        scannum = 2
+
+        b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=ScanFile)
         b1.place(x=130, y=150)
         def Continue():
             messagebox.showinfo("Innformation","file is imported successfully ")
@@ -262,10 +303,13 @@ def package1(menuroot):
         NewWindow.geometry("500x200")
         NewWindow.resizable(0, 0)
 
+        global scannum
+        scannum = 1
+
         label_question = Label(NewWindow, text="Would you like to scan through the data in the Excel Sheet")
         label_question.place(x=100, y=69)
 
-        b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=OpenNew)
+        b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=ScanFile)
         b1.place(x=130, y=150)
         def Continue():
             messagebox.showinfo("Innformation","file is imported successfully ")
