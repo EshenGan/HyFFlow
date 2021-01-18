@@ -14,6 +14,7 @@ from pandas import DataFrame
 
 df=DataFrame()
 df2=DataFrame()
+scannum=0
 def package1(menuroot):
     menuroot.withdraw()
     root=Toplevel(menuroot)
@@ -361,7 +362,7 @@ def package1(menuroot):
     Importexcel_menu.add_command(label="Discharge", command=ImportDischarge)
     Importexcel_menu.add_command(label="Rainfall", command=ImportRainfall)
 
-    filemenu.add_cascade(label="Import Excel", menu=Importexcel_menu)
+    filemenu.add_cascade(label="Select Excel", menu=Importexcel_menu)
 
     #submenu for switching Menu
     Switchpackage_menu = Menu(filemenu, tearoff=0)
