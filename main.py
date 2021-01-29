@@ -24,6 +24,8 @@ from statsmodels.formula.api import ols
 df=DataFrame()
 df2=DataFrame()
 scannum=0
+scancounter1=0
+scancounter2=0
 togglehydro = False
 toggleMD = False
 toggleMR = False
@@ -132,17 +134,21 @@ def package1(menuroot):
             if file_path!="":
                 excel_filename = r"{}".format(file_path)
                 if excel_filename[-4:] == ".csv":
-                    df = pd.read_csv(excel_filename)
+                    if scancounter1==0:
+                        df = pd.read_csv(excel_filename)
                 else:
-                    df = pd.read_excel(excel_filename)
+                    if scancounter1==0:
+                        df = pd.read_excel(excel_filename)
             #if filepath for rainfall is not empty only load
             if file_path2 !="":
                 excel_filename2 = r"{}".format(file_path2)
             
                 if excel_filename2[-4:] == ".csv":
-                    df2 = pd.read_csv(excel_filename2)
+                    if scancounter2==0:
+                        df2 = pd.read_csv(excel_filename2)
                 else:
-                    df2 = pd.read_excel(excel_filename2)
+                    if scancounter2==0:
+                        df2 = pd.read_excel(excel_filename2)
 
 
         except ValueError:
@@ -246,15 +252,18 @@ def package1(menuroot):
         file_path2 = label3_file["text"]
         global df
         global scannum
-
+        global scancounter1
+        global scancounter2
         if scannum == 1:
             df = pd.read_excel(file_path)
             colname = df.columns[1]
+            scancounter1=1
         elif scannum == 2:
             df = pd.read_excel(file_path2)
             df = pd.melt(df.reset_index(), value_vars = df.columns.values)
             df.columns = ['rainfallstations', 'rainfall']
             colname = df.columns[1]
+            scancounter2=1
 
         NewWindow = Toplevel(root)
         NewWindow.title("HyFFlow")
