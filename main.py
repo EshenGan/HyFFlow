@@ -622,7 +622,7 @@ def package1(menuroot):
     #SubMenu for selecting visualization
     Visualization_menu = Menu(Analysismenu, tearoff=0)
 
-   Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:callhydroanalyse())
+    Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:callhydroanalyse())
     Visualization_menu.add_checkbutton(label="Flow duration " , command=lambda:flowduration())
     Visualization_menu.add_checkbutton(label="Flood frequency" ,  command=lambda:floodgraph())
     Visualization_menu.add_checkbutton(label="Median Discharge" ,  command=lambda:MedianDischarge())
