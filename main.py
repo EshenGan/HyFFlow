@@ -2,11 +2,20 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from tkinter import ttk, filedialog, messagebox
 import pandas as pd
-import numpy as np
 import analysis1 as ty
 import anova as an
 import hydrograph_baseflow as hb
 from pandas import DataFrame
+from matplotlib import pyplot as plt
+import Export as ex
+import tkinter as tk
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib import gridspec
+import plotfunction as pf
+import numpy as np
+from statsmodels.formula.api import ols
+
+
 
 
 
@@ -15,6 +24,17 @@ from pandas import DataFrame
 df=DataFrame()
 df2=DataFrame()
 scannum=0
+togglehydro = False
+toggleMD = False
+toggleMR = False
+toggleflood = False
+toggleflow = False
+toggleanovaa = False
+toggleposthoc = False
+togglebarchart = False
+togglehydrographbf = False
+toggleHB = False
+toggleLR = False
 def package1(menuroot):
     menuroot.withdraw()
     root=Toplevel(menuroot)
@@ -326,9 +346,218 @@ def package1(menuroot):
 
 
           
-    #function for exporting file
+   #function for Exporing
+
+    def allgraphs (root,data,data2,graphName):
+        fig, ax = plt.subplots(figsize=(12, 6))
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        canvas.get_tk_widget()
+        Top.withdraw()
+        df = data.copy()
+        df2 = data2.copy()
+        plt.clf()  # clear plot first
+        g = gridspec.GridSpec(2, 1, height_ratios=[1, 2])
+
+        if graphName == "hydrograph":
+            pf.hydrograph(df, df2, g)
+            plt.savefig('Hydrograph and hyetrograph.png')
+
+        elif graphName == "flowduration":
+            pf.flowplot(df)
+            plt.savefig('Flow duration.png')
+
+        elif graphName == "floodgraph":
+            pf.floodcurve(data)
+            plt.savefig('Flood frequency.png')
+        elif graphName == "MedianDischarge":
+            pf.medianmonthDis(df)
+            plt.savefig('Median Discharge.png')
+
+        elif graphName == "medianRain":
+            selectmedianRain(root, data2)
+
+            # anovaa
+        elif graphName == "anovaa":
+            anovatable()
+        elif graphName == "posthoc":
+            posthoctable()
+        elif graphName == "barchart":
+            barcharttable()
+        elif graphName == "baseflowdiagram":
+            baseflowgraph()
+
+        elif graphName == "hydrographbaseflow":
+            hydrographbaseflow()
+        elif graphName == "linearregression":
+            linearregression()
+
+        Top.destroy()
+
+    def anovatable():
+
+        an.anovaa(df2, root, True)
+
+    def posthoctable():
+
+        an.posthoc(df2, root,True)
+
+    def barcharttable():
+
+        an.barchart(df2, root, True)
+
+    def baseflowgraph():
+
+        hb.baseflowdiagram(df, root, True)
+    def hydrographbaseflow():
+        hb.hydrograph_baseflow(df, root, True)
+    def linearregression():
+        hb.linear_regression(df, df2, root, True)
+
+
+    def selectmedianRain(root, data2):
+
+        df = data2.copy()
+        l = len(data2.columns) - 1
+        Top2 = tk.Toplevel(root)
+        var = tk.IntVar()
+        var.set(0)
+
+        tk.Radiobutton(Top2, text='all columns', variable=var, value=0).pack(anchor=tk.W)
+        for i in range(l):
+            b = i + 1
+            tk.Radiobutton(Top2, text=data2.columns[i + 1], variable=var, value=b).pack(anchor=tk.W)
+
+        def _continue():
+
+            fig, ax = plt.subplots(figsize=(12, 6))
+            Top = tk.Toplevel(root)
+            canvas = FigureCanvasTkAgg(fig, master=Top)
+            canvas.get_tk_widget()
+            Top.withdraw()
+            g = var.get()
+            Top2.destroy()
+            plt.clf()  # clear plot first
+            pf.medianmonthRain(df, g)
+            plt.savefig('Median RainFall.png')
+            messagebox.showinfo("Innformation", "file is exported successfully ")
+
+        tk.Button(Top2, text='OK', command=_continue).pack(anchor=tk.W)
+
+
+    # function for exporting file
+
     def ExportFile():
-        print("Need to figure out")
+        x = True
+        for graph in ex.getGraphs():
+            allgraphs(root, df, df2,graph)
+            if graph == "medianRain":
+                x = False
+
+        if x:
+            messagebox.showinfo("Innformation", "file is exported successfully ")
+
+    def callhydroanalyse():
+        global togglehydro
+        togglehydro = not togglehydro
+        if togglehydro:
+            ex.addNewGraph("hydrograph")
+        else:
+            ex.removeGraph("hydrograph")
+
+        ty.hydro_graph(root, df, df2)
+
+    def flowduration():
+        global toggleflow
+        toggleflow = not toggleflow
+        if toggleflow:
+            ex.addNewGraph("flowduration")
+        else:
+            ex.removeGraph("flowduration")
+        ty.flow_curve(root, df)
+
+    def floodgraph():
+        global toggleflood
+        toggleflood = not toggleflood
+        if toggleflood:
+            ex.addNewGraph("floodgraph")
+        else:
+            ex.removeGraph("floodgraph")
+        ty.flood_curve(root,df)
+
+    def MedianDischarge():
+        global toggleMD
+        toggleMD = not toggleMD
+        if toggleMD:
+            ex.addNewGraph("MedianDischarge")
+        else:
+            ex.removeGraph("MedianDischarge")
+        ty.medianDischarge(root, df)
+
+    def medianRain():
+        global toggleMR
+        toggleMR = not toggleMR
+        if toggleMR:
+            ex.addNewGraph("medianRain")
+        else:
+            ex.removeGraph("medianRain")
+        ty.median_Rain(root, df2)
+
+    def anovaa():
+            global toggleanovaa
+            toggleanovaa = not toggleanovaa
+            if toggleanovaa:
+                ex.addNewGraph("anovaa")
+            else:
+                ex.removeGraph("anovaa")
+            an.anovaa(df2,root,False)
+
+    def posthoc():
+            global toggleposthoc
+            toggleposthoc = not toggleposthoc
+            if toggleposthoc:
+                ex.addNewGraph("posthoc")
+            else:
+                ex.removeGraph("posthoc")
+            an.posthoc(df2, root,False)
+
+    def barchart():
+            global togglebarchart
+            togglebarchart = not togglebarchart
+            if togglebarchart:
+                ex.addNewGraph("barchart")
+            else:
+                ex.removeGraph("barchart")
+            an.barchart(df2, root,False)
+
+    def baseflowdiagram():
+        global togglehydrographbf
+        togglehydrographbf = not togglehydrographbf
+        if togglehydrographbf:
+            ex.addNewGraph("baseflowdiagram")
+        else:
+            ex.removeGraph("baseflowdiagram")
+        hb.baseflowdiagram(df, root, False)
+
+    def hydrograph_baseflow():
+        global toggleHB
+        toggleHB = not toggleHB
+        if toggleHB:
+            ex.addNewGraph("hydrographbaseflow")
+        else:
+            ex.removeGraph("hydrographbaseflow")
+        hb.hydrograph_baseflow(df, root, False)
+
+    def linear_regression():
+        global toggleLR
+        toggleLR = not toggleLR
+        if toggleLR:
+            ex.addNewGraph("linearregression")
+        else:
+            ex.removeGraph("linearregression")
+        hb.linear_regression(df,df2,root,False)
+
+
 
     #function for switching package
     def function():
@@ -393,18 +622,18 @@ def package1(menuroot):
     #SubMenu for selecting visualization
     Visualization_menu = Menu(Analysismenu, tearoff=0)
 
-    Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:ty.hydro_graph(root,df,df2))
-    Visualization_menu.add_checkbutton(label="Flow duration " , command=lambda:ty.flow_curve(root,df))
-    Visualization_menu.add_checkbutton(label="Flood frequency" ,  command=lambda:ty.flood_curve(root,df))
-    Visualization_menu.add_checkbutton(label="Median Discharge" ,  command=lambda:ty.medianDischarge(root,df))
-    Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:ty.median_Rain(root,df2))
-    Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda:an.anovaa(df2,root))
-    Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:an.posthoc(df2,root))
-    Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:an.barchart(df2,root))
-    Visualization_menu.add_checkbutton(label="Baseflow diagram" , command= lambda:hb.baseflowdiagram(df,root))
-    Visualization_menu.add_checkbutton(label="Hydrograph with Baseflow" , command=lambda:hb.hydrograph_baseflow(df,root))
+   Visualization_menu.add_checkbutton(label="Hydrograph and hyetrograph" , command=lambda:callhydroanalyse())
+    Visualization_menu.add_checkbutton(label="Flow duration " , command=lambda:flowduration())
+    Visualization_menu.add_checkbutton(label="Flood frequency" ,  command=lambda:floodgraph())
+    Visualization_menu.add_checkbutton(label="Median Discharge" ,  command=lambda:MedianDischarge())
+    Visualization_menu.add_checkbutton(label="Median RainFall" ,  command=lambda:medianRain())
+    Visualization_menu.add_checkbutton(label="Anova" ,  command=lambda: anovaa())
+    Visualization_menu.add_checkbutton(label="Anova Post Hoc" ,  command=lambda:posthoc())
+    Visualization_menu.add_checkbutton(label="Rainfallstations Mean Chart" ,  command=lambda:barchart())
+    Visualization_menu.add_checkbutton(label="Baseflow diagram" , command= lambda:baseflowdiagram())
+    Visualization_menu.add_checkbutton(label="Hydrograph with Baseflow" , command=lambda:hydrograph_baseflow())
     Visualization_menu.add_checkbutton(label="Plots to show of flow seasonality" , command=Output)
-    Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=lambda:hb.linear_regression(df,df2,root))
+    Visualization_menu.add_checkbutton(label="Rainfall-runoff relations" , command=lambda:linear_regression())
     Visualization_menu.add_separator()
     Visualization_menu.add_checkbutton(label="select all" , command=All)
 
