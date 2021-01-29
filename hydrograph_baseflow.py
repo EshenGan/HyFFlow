@@ -3,12 +3,10 @@ import pandas as pd
 from pandas.plotting import register_matplotlib_converters
 register_matplotlib_converters()
 import numpy as np
-
 from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use('TkAgg')
-
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from sklearn.linear_model import LinearRegression
 from sklearn.impute import SimpleImputer
@@ -17,22 +15,35 @@ from matplotlib.figure import Figure
 
 fig = Figure(figsize=(12,6))
 ax= fig.add_subplot()
-def new_window(root):
 
-    
-    Top=tk.Toplevel(root)
-    canvas = FigureCanvasTkAgg(fig, master=Top)
-    plot_widget = canvas.get_tk_widget()
-    def _quit():
-        plt.clf() 
-        Top.destroy()
-    tk.Button(Top, text = 'Quit', command = _quit).grid(row=2, column=0)   
-    plot_widget.grid(row=0, column=0)
+def baseflowdiagram(data,root,isExporting):
+
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
 
 
-def baseflowdiagram(data,root):
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+
+        def Save():
+            fig.savefig('Baseflow diagram.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
     df=data.copy()
-    new_window(root)
+    Top = new_window(root)
     ax.cla()
     plt.clf() # clear plot first
     # figure s5
@@ -54,11 +65,39 @@ def baseflowdiagram(data,root):
     ax.plot(var.index.values,var, color='red',label="baseflow")
     ax.legend()
 
+    if isExporting:
+        fig.savefig('Baseflow diagram.png')
+        Top.destroy()
 
 
-def hydrograph_baseflow(data,root):
+
+def hydrograph_baseflow(data,root,isExporting):
+
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
+
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+        def Save():
+            fig.savefig('Hydrograph with Baseflow.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
+
     df=data.copy()
-    new_window(root)
+    Top = new_window(root)
     ax.cla()
     plt.clf() # clear plot first
     # figure s6
@@ -80,11 +119,39 @@ def hydrograph_baseflow(data,root):
     ax.plot(var1.index.values,var1, color='red',label='baseflow')
     ax.legend()
 
+    if isExporting:
+        fig.savefig('Hydrograph with Baseflow.png')
+        Top.destroy()
 
-def linear_regression(data,data2,root):
+
+def linear_regression(data,data2,root,isExporting):
+
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
+
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+        def Save():
+
+            fig.savefig('Rainfall-runoff relations.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
     df=data.copy()
     df2=data2.copy()
-    new_window(root)
+    Top = new_window(root)
     plt.cla()
     plt.clf() # clear plot first
     
@@ -116,4 +183,10 @@ def linear_regression(data,data2,root):
     ax.scatter(lx, ly,label='x/y')
     ax.plot(lx, yl, color='red',label="best fit line")
     ax.legend()
+
+    if isExporting:
+        fig.savefig('Rainfall-runoff relations.png')
+        Top.destroy()
+
+
 
