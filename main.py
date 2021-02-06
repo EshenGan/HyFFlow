@@ -251,6 +251,7 @@ def package1(menuroot):
         file_path = label2_file["text"]
         file_path2 = label3_file["text"]
         global df
+        global df2
         global scannum
         global scancounter1
         global scancounter2
@@ -259,10 +260,10 @@ def package1(menuroot):
             colname = df.columns[1]
             scancounter1=1
         elif scannum == 2:
-            df = pd.read_excel(file_path2)
-            df = pd.melt(df.reset_index(), value_vars = df.columns.values)
-            df.columns = ['rainfallstations', 'rainfall']
-            colname = df.columns[1]
+            df2 = pd.read_excel(file_path2)
+            df2 = pd.melt(df.reset_index(), value_vars = df2.columns.values)
+            df2.columns = ['rainfallstations', 'rainfall']
+            colname = df2.columns[1]
             scancounter2=1
 
         NewWindow = Toplevel(root)
@@ -270,12 +271,12 @@ def package1(menuroot):
         NewWindow.geometry("500x200")
         NewWindow.resizable(0, 0)
 
-        if df.isnull().values.any():
+        if df2.isnull().values.any():
             label_question = Label(NewWindow, text="Excel file contains NULL values, would you like to remove NULL values?")
             label_question.place(x=100, y=69)
             def RemoveNA():
-                df[colname].replace('', np.nan, inplace = True)
-                df.dropna(inplace = True)
+                df2[colname].replace('', np.nan, inplace = True)
+                df2.dropna(inplace = True)
                 messagebox.showinfo("Information","NULL values removed, file is imported successfully")
                 NewWindow.destroy()
             b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=RemoveNA)
