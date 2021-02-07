@@ -21,20 +21,24 @@ if len(packnames_to_install) > 0:
     utils.install_packages(StrVector(packnames_to_install))
 # loadpackage
 hydrostat =importr('hydrostats')
-
+#import
 df=pd.read_excel("C:\\Users\\kumab\\Desktop\\main\\Telok Buing Discharge.xlsx")
 df.columns=['Date','Q']
-
+#convert from pandas format to r format
 with localconverter(ro.default_converter + pandas2ri.converter):
   Colwell= ro.conversion.py2ri(df)
-
+#create r global variable Colwell and result
 robjects.globalenv['Colwell'] = Colwell
 robjects.globalenv['result'] =0
+#use robject to run r script
 robjects.r(
     'Colwell <- as.data.frame(Colwell) '
 )
+#use robject to run r script
 robjects.r(
     'result=Colwells(Colwell, boundaries="weighted_log_class_size", s=12,indices.only=TRUE)'
 )
+#get the result from global variable
 result=robjects.globalenv['result'] 
+#print it out might need to test whether can be table or not
 print(result)
