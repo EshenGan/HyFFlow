@@ -21,22 +21,33 @@ from Hydrograph.hydrograph import sepBaseflow
 
 fig = Figure(figsize=(12,6))
 ax= fig.add_subplot()
-def new_window(root):
 
-    
-    Top=tk.Toplevel(root)
-    canvas = FigureCanvasTkAgg(fig, master=Top)
-    plot_widget = canvas.get_tk_widget()
-    def _quit():
-        plt.clf() 
-        Top.destroy()
-    tk.Button(Top, text = 'Quit', command = _quit).grid(row=2, column=0)   
-    plot_widget.grid(row=0, column=0)
-    Top.protocol("WM_DELETE_WINDOW", _quit)
 
-def baseflowdiagram(data,root):
+def baseflowdiagram(data,root,isExporting):
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
+
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+        def Save():
+            fig.savefig('Baseflow diagram.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
     df=data.copy()
-    new_window(root)
+    Top = new_window(root)
     ax.cla()
     plt.clf() # clear plot first
     # figure s5
@@ -59,10 +70,38 @@ def baseflowdiagram(data,root):
     ax.legend()
 
 
+    if isExporting:
+        fig.savefig('Baseflow diagram.png')
+        Top.destroy()
 
-def hydrograph_baseflow(data,root):
+
+
+
+def hydrograph_baseflow(data,root,isExporting):
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
+
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+        def Save():
+            fig.savefig('Hydrograph with Baseflow.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
     df=data.copy()
-    new_window(root)
+    Top = new_window(root)
     ax.cla()
     plt.clf() # clear plot first
     # figure s6
@@ -94,11 +133,37 @@ def hydrograph_baseflow(data,root):
     ax.plot(var1.index.values,var1, color='red',label='baseflow')
     ax.legend()
 
+    if isExporting:
+        fig.savefig('Hydrograph with Baseflow.png')
+        Top.destroy()
 
-def linear_regression(data,data2,root):
+
+def linear_regression(data,data2,root,isExporting):
+    def new_window(root):
+        Top = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig, master=Top)
+        plot_widget = canvas.get_tk_widget()
+
+        if isExporting:
+            Top.withdraw()
+
+        def _quit():
+            plt.clf()
+            Top.destroy()
+
+        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        plot_widget.grid(row=0, column=0)
+
+        def Save():
+            fig.savefig('Rainfall-runoff relations.png')
+
+        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top
+
     df=data.copy()
     df2=data2.copy()
-    new_window(root)
+    Top = new_window(root)
     plt.cla()
     plt.clf() # clear plot first
     
@@ -136,10 +201,17 @@ def linear_regression(data,data2,root):
     ax.plot(lx, yl, color='red',label="best fit line")
     ax.legend()
 
+    if isExporting:
+        fig.savefig('Rainfall-runoff relations.png')
+        Top.destroy()
+
     #printing values
     print('Slope: ',lr.coef_)
     print('Intercept: ',lr.intercept_)
     print('Root mean squared error:' ,rmse)
     print('R2 score: ',r2)
+
+
+
 
 
