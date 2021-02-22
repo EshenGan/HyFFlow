@@ -31,7 +31,7 @@ def OpenPackage4():
 b1 = Button(root, text = " Hydrograph Shape",height="5",width="40" ,bg="grey",fg = "white" ,command=lambda:mn.package1(root))
 b1.place(x=100,y=280)
 
-b2 = Button(root, text = " Fundamentals of the Flow Regime ",height="5", width="40",bg ="grey",fg= "white" ,command=lambda:mn.package1(root))
+b2 = Button(root, text = " Fundamentals of the Flow Regime ",height="5", width="40",bg ="grey",fg= "white" ,command=lambda:mn.package2(root))
 b2.place(x=100,y=180)
 
 b3 = Button(root, text = " Flow Metrics",height="5",width="40",bg="grey" ,fg = "white",command=lambda:mn2.package2(root))
