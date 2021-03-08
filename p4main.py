@@ -254,7 +254,6 @@ def package4(menuroot):
     def quit_me():
         root.destroy()
         menuroot.quit()
-        menuroot.destroy()
         
         
 

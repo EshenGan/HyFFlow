@@ -30,7 +30,7 @@ def seperatemonthtest(df,startmonth,endmonth):
             if dframe.loc[i, 'month']>endmonth or dframe.loc[i, 'month']<startmonth:
                 dframe.drop(index=i,inplace=True)
 
-    data=dframe[['Date',dframe.columns[0]]]
+    data=dframe[['Date',dframe.columns[0]]].copy()
     data.set_index(data['Date'],inplace=True)
     data.drop(columns = ['Date'], inplace = True)
     return data

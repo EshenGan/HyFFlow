@@ -6,9 +6,11 @@ import mankendall_month as man_m
 
 def mannkendalltestforall(dframe):
     dframe[dframe.columns[0]] = pd.to_datetime(dframe[dframe.columns[0]])
-    dframe.set_index(dframe.columns[0], inplace=True)
     dframe['mean'] = dframe.mean(axis=1)
-    return dframe['mean']
+    data=dframe[[dframe.columns[0],'mean']].copy()
+    data.set_index(data.columns[0], inplace=True)
+
+    return data
 
 def mannkendalltest(dframe,colnum):
     data = dframe[[dframe.columns[0],dframe.columns[colnum]]].copy()  #df should be the original excel file
@@ -42,7 +44,7 @@ def selectwinfunction(mainroot,df):
             resultdf=mannkendalltest(df, g)
             
         man_m.selectmonthfunc(selectwindow,resultdf)
-        selectwindow.destroy()
+
 
     def quit_me():
         selectwindow.quit()

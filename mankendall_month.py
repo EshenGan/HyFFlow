@@ -44,7 +44,7 @@ def selectmonthfunc(selectroot,df):
         smt_df=smt.seperatemonthtest(df,int_start,int_end)
         result=mk.original_test(smt_df)
         #call new window
-        mnd.displaymankendall(monthwindow,result)
+        mnd.displaymankendall(monthwindow,result,0)
 
 
 
@@ -53,7 +53,7 @@ def selectmonthfunc(selectroot,df):
 
     def quit_me():
         monthwindow.quit()
-        monthwindow.destroy()
+
         selectroot.deiconify()
 
     monthwindow.protocol("WM_DELETE_WINDOW", quit_me)
