@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import font
 import main as mn
 import p2main as mn2
+import p4main as mn4
 
 root =Tk()
 root.title("HyFFlow")
@@ -37,7 +38,7 @@ b2.place(x=100,y=180)
 b3 = Button(root, text = " Flow Metrics",height="5",width="40",bg="grey" ,fg = "white",command=lambda:mn2.package2(root))
 b3.place(x=440,y=180)
 
-b4 = Button(root, text = " Long-term Trends on Flow and Rainfall Regimes",height="5",width="40",bg="grey" ,fg = "white", command=lambda:mn.package1(root))
+b4 = Button(root, text = " Long-term Trends on Flow and Rainfall Regimes",height="5",width="40",bg="grey" ,fg = "white", command=lambda:mn4.package4(root))
 b4.place(x=440,y=280)
 def quit_me():
     root.quit()

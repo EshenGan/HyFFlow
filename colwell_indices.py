@@ -9,11 +9,11 @@ import matplotlib.pyplot as plt
 from pandas import DataFrame
 from matplotlib.backends.backend_pdf import PdfPages
 from tkinter import filedialog
-
+import rpy2test as ci
 
 
 def colwell_indices(df, root, isExporting):
-    import rpy2test as ci
+    
     def new_window(root):
         figure, ax1 = plt.subplots(figsize=(13, 5), dpi=100)
         Top = tk.Toplevel(root)
