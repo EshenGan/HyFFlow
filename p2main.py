@@ -153,29 +153,32 @@ def package2(menuroot):
             NewWindow.destroy()
 
     def ImportDischarge():
+        filename2=None
         filename2 = filedialog.askopenfilename(initialdir="/",
                                            title="Select A File",
                                            filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
         label2_file.configure(text=filename2)
+        if filename2!="":
+            NewWindow = Toplevel(root)
+            NewWindow.title("HyFFlow")
+            NewWindow.geometry("500x200")
+            NewWindow.resizable(0, 0)
 
-        NewWindow = Toplevel(root)
-        NewWindow.title("HyFFlow")
-        NewWindow.geometry("500x200")
-        NewWindow.resizable(0, 0)
+            global scannum
+            scannum = 1
 
-        global scannum
-        scannum = 1
+            label_question = Label(NewWindow, text="Would you like to scan through the data in the Excel Sheet")
+            label_question.place(x=100, y=69)
 
-        label_question = Label(NewWindow, text="Would you like to scan through the data in the Excel Sheet")
-        label_question.place(x=100, y=69)
+            b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=ScanFile)
+            b1.place(x=130, y=150)
+            def Continue():
+                messagebox.showinfo("Innformation","file is imported successfully ")
+                NewWindow.destroy()
+            b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
+            b2.place(x=280, y=150)
+    
 
-        b1 = Button(NewWindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold", command=ScanFile)
-        b1.place(x=130, y=150)
-        def Continue():
-            messagebox.showinfo("Innformation","file is imported successfully ")
-            NewWindow.destroy()
-        b2 = Button(NewWindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold", command=Continue)
-        b2.place(x=280, y=150)  
 
     def allgraphs (root,data,graphName):
         fig, ax = plt.subplots(figsize=(12, 6))
