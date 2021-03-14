@@ -204,13 +204,13 @@ def package4(menuroot):
     root.config(menu=menu)
     filemenu = Menu(menu, tearoff=0)
     menu.add_cascade(label="File", menu=filemenu)
-    filemenu.add_command(label="Open Graph", command=OpenFile)
+    
 
     Importexcel_menu = Menu(filemenu, tearoff=0)
     Importexcel_menu.add_command(label="Discharge or Rainfall", command=ImportDischarge)
 
     filemenu.add_cascade(label="Select Excel", menu=Importexcel_menu)
-
+    filemenu.add_command(label="Open Graph", command=OpenFile)
     #submenu for switching Menu
     Switchpackage_menu = Menu(filemenu, tearoff=0)
     Switchpackage_menu.add_command(label="Fundamentals of the Flow Regime", command=function)
