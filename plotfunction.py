@@ -14,10 +14,9 @@ from pandas import DataFrame
 
 
 
-def flowplot(data):
+def flowplot(df):
     #plot flow of duration
-    
-
+    data=df.copy()
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])   
     data['months'] = data[data.columns[0]].apply(lambda x:x.strftime('%B'))
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
@@ -29,6 +28,7 @@ def flowplot(data):
     
     data_dischargesorted=calculate_return2(data,data.columns[1])
     n=len(df3)
+    
     for y in range(n-1):
         datalist= DataFrame(df3[y],columns=data.columns)
         dataplot=calculate_return2(datalist,datalist.columns[1])
@@ -55,6 +55,7 @@ def flowplot(data):
     plt.ylabel('Discharge')
     plt.xlim(0,100)
     plt.title("Annual Flow duration")
+    return data_dischargesorted
 
 def hydrograph(df,data,gs):
     #plot hydro with hyeto
@@ -113,7 +114,8 @@ def hydrographOnly(df):
     plt.tight_layout()
     plt.gcf().subplots_adjust(bottom=0.15)
 
-def floodcurve(data):
+def floodcurve(df):
+    data=df.copy()
     #plot flood duration curve
     data[data.columns[0]]=pd.to_datetime(data[data.columns[0]])
     #dg = data.groupby(pd.Grouper(key='Time', freq='1W')).sum()#way to group by week
@@ -123,6 +125,7 @@ def floodcurve(data):
     data_annualmax['year']=data_annualmax.index
 
     df2=calculate_return(data_annualmax,data_annualmax.columns[1])
+    
     plt.scatter(df2['Tp'],df2[df2.columns[2]],label="Tp estimated",color="blue")
     plt.plot(df2['Tp t'],df2[df2.columns[2]],label="Tp theoritical",color="orange")
         
@@ -134,6 +137,7 @@ def floodcurve(data):
     plt.ylabel('Peak streamflow (cfs)')
     plt.title(" Flood frequency curve")
     plt.legend()
+    return df2
 
 
 def medianmonthDis(data):

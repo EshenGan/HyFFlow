@@ -50,7 +50,7 @@ def displaymankendall(root,result,isExporting):
         displayroot.destroy()
     def quit_me():
         displayroot.quit()
-
+        displayroot.destroy()
 
     displayroot.protocol("WM_DELETE_WINDOW", quit_me)
     displayroot.mainloop()

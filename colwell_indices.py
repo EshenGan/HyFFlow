@@ -46,3 +46,9 @@ def colwell_indices(df, root, isExporting):
     if isExporting:
         plt.savefig('Colwell Indices.pdf')
         Top.destroy()
+    
+    def quit_me():
+        Top.quit()
+        Top.destroy()
+        root.destroy()
+    Top.protocol("WM_DELETE_WINDOW", quit_me)
