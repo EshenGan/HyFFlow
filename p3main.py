@@ -234,7 +234,7 @@ def package3(menuroot):
     #SubMenu for selecting visualization
     Visualization_menu = Menu(Analysismenu, tearoff=0)
 
-    Visualization_menu.add_checkbutton(label="Principal Componenet Analysis")
+    Visualization_menu.add_checkbutton(label="Principal Component Analysis")
     Analysismenu.add_cascade(label="Visualization", menu=Visualization_menu)
 
 
