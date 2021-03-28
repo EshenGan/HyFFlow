@@ -10,10 +10,9 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib import gridspec
 import numpy as np
 from statsmodels.formula.api import ols
-import colwelselectsta as ci
 import main as mn
+import p2main as mn2
 import p4main as mn4
-import p3main as mn3
 
 
 df=DataFrame()
@@ -21,11 +20,12 @@ scancounter=0
 scannum = 0
 toggleCI = False
 
-def package2(menuroot):
+def package3(menuroot):
     menuroot.withdraw()
     root=Toplevel(menuroot)
     root.geometry("733x566")
     root.state('zoomed')
+
     def OpenFile():
         filename2 = filedialog.askopenfilename(initialdir="/",
                                           title="Select A ZIP",
@@ -184,58 +184,15 @@ def package2(menuroot):
     
 
 
-    def allgraphs (root,data,graphName):
-        fig, ax = plt.subplots(figsize=(12, 6))
-        Top = tk.Toplevel(root)
-        canvas = FigureCanvasTkAgg(fig, master=Top)
-        canvas.get_tk_widget()
-        Top.withdraw()
-        df = data.copy()
-        plt.clf()  # clear plot first
-        g = gridspec.GridSpec(2, 1, height_ratios=[1, 2])
+    
+    
 
-        if graphName == "colwell_indices":
-            colwell()
-
-        Top.destroy()
-
-    def colwell():
-        ci.selectwinfunction(df,root,True)
-        
-    # function for exporting file
-    def ExportFile():
-        x = True
-        for graph in ex.getGraphs():
-            allgraphs(root, df, graph)
-            if graph == "medianRain":
-                x = False
-
-        if x:
-            messagebox.showinfo("Innformation", "file is exported successfully ")  
-
-    def callcolwell_indices():
-        global toggleCI
-        toggleCI = not toggleCI
-        if toggleCI:
-            ex.addNewGraph("Colwell Indices")
-        else:
-            ex.removeGraph("Colwell Indices")
-        ci.selectwinfunction(df, root, False)
-
-    #function for switching package
-    def function():
-        print("Need to figure out function")
+   
 
     #About
     def About():
         print(".......")
 
-    # #Function for selecting visualization output
-    # def Output():
-    #     print("Need to figure out")
-    # #Function for selecting
-    # def All():
-    #     print("Need to figure out")
 
 
     #Menu
@@ -249,16 +206,15 @@ def package2(menuroot):
     Importexcel_menu.add_command(label="Discharge", command=ImportDischarge)
 
     filemenu.add_cascade(label="Select Excel", menu=Importexcel_menu)
-    filemenu.add_command(label="Open Graph", command=OpenFile)
+    
     #submenu for switching Menu
     Switchpackage_menu = Menu(filemenu, tearoff=0)
     Switchpackage_menu.add_command(label="Fundamentals of the Flow Regime", command=lambda:mn.package1(root))
-    Switchpackage_menu.add_command(label="Hyrograph Shape", command=lambda:mn3.package3(root))
+    Switchpackage_menu.add_command(label="Flow Metrics", command=lambda:mn2.package2(root))
     Switchpackage_menu.add_command(label="Long-term Trends on Flow and Rainfall Regimes", command=lambda:mn4.package4(root))
-
     filemenu.add_cascade(label="Switch to other package", menu=Switchpackage_menu)
 
-    filemenu.add_command(label="Export", command=ExportFile)
+    
     filemenu.add_separator()
     def closepackage():
         root.destroy() 
@@ -278,7 +234,7 @@ def package2(menuroot):
     #SubMenu for selecting visualization
     Visualization_menu = Menu(Analysismenu, tearoff=0)
 
-    Visualization_menu.add_checkbutton(label="Colwell Indices" , command=lambda:callcolwell_indices())
+    Visualization_menu.add_checkbutton(label="Principal Componenet Analysis")
     Analysismenu.add_cascade(label="Visualization", menu=Visualization_menu)
 
 

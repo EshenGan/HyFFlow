@@ -3,6 +3,7 @@ from tkinter import font
 import main as mn
 import p2main as mn2
 import p4main as mn4
+import p3main as mn3
 
 root =Tk()
 root.title("HyFFlow")
@@ -29,7 +30,7 @@ def OpenPackage4():
 
 
 
-b1 = Button(root, text = " Hydrograph Shape",height="5",width="40" ,bg="grey",fg = "white" ,command=lambda:mn.package1(root))
+b1 = Button(root, text = " Hydrograph Shape",height="5",width="40" ,bg="grey",fg = "white" ,command=lambda:mn3.package3(root))
 b1.place(x=100,y=280)
 
 b2 = Button(root, text = " Fundamentals of the Flow Regime ",height="5", width="40",bg ="grey",fg= "white" ,command=lambda:mn.package1(root))

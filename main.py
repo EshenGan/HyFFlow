@@ -16,6 +16,7 @@ import numpy as np
 from statsmodels.formula.api import ols
 import p2main as mn2
 import p4main as mn4
+import p3main as mn3
 
 
 
@@ -610,7 +611,7 @@ def package1(menuroot):
     #submenu for switching Menu
     Switchpackage_menu = Menu(filemenu, tearoff=0)
     Switchpackage_menu.add_command(label="Flow Metrics", command=lambda:mn2.package2(root))
-    Switchpackage_menu.add_command(label="Hyrograph Shape", command=function)
+    Switchpackage_menu.add_command(label="Hyrograph Shape", command=lambda:mn3.package3(root))
     Switchpackage_menu.add_command(label="Long-term Trends on Flow and Rainfall Regimes", command=lambda:mn4.package4(root))
 
     filemenu.add_cascade(label="Switch to other package", menu=Switchpackage_menu)
