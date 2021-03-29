@@ -172,16 +172,23 @@ def linear_regression(data, data2, root, isExporting):
         showdetails()
 
     def new_window_2(root):
-        Top = tk.Toplevel(root)
-        canvas = FigureCanvasTkAgg(fig1, master=Top)
+        Top2 = tk.Toplevel(root)
+        canvas = FigureCanvasTkAgg(fig1, master=Top2)
         plot_widget = canvas.get_tk_widget()
 
         def _quit():
             plt.clf()
-            Top.destroy()
+            Top2.destroy()
 
-        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+        tk.Button(Top2, text='Quit', command=_quit).grid(row=2, column=1)
         plot_widget.grid(row=0, column=0)
+
+        def Save():
+            fig1.savefig('Rainfall-runoff relations Details.png')
+
+        tk.Button(Top2, text='Save', command=Save).grid(row=2, column=0)
+        plot_widget.grid(row=0, column=0)
+        return Top2
 
     df = data.copy()
     df2 = data2.copy()
