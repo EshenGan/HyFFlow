@@ -3,7 +3,7 @@ from tkinter import *
 from tkcalendar import *
 import pandas as pd
 from pandas.plotting import register_matplotlib_converters
-
+from tkinter import messagebox
 register_matplotlib_converters()
 import numpy as np
 
@@ -76,64 +76,83 @@ def baseflowdiagram(data, root, isExporting):
 
 
 def hydrograph_baseflow(data, root, isExporting):
-    fig = Figure(figsize=(12, 6))
-    ax = fig.add_subplot()
-    def new_window(root):
-        Top = tk.Toplevel(root)
-        canvas = FigureCanvasTkAgg(fig, master=Top)
-        plot_widget = canvas.get_tk_widget()
+    def run_plot():
+        fig = Figure(figsize=(12, 6))
+        ax = fig.add_subplot()
+        def new_window(root):
+            Top = tk.Toplevel(root)
+            canvas = FigureCanvasTkAgg(fig, master=Top)
+            plot_widget = canvas.get_tk_widget()
+
+            if isExporting:
+                Top.withdraw()
+
+            def _quit():
+                plt.clf()
+                Top.destroy()
+
+            tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
+            plot_widget.grid(row=0, column=0)
+
+            def Save():
+                fig.savefig('Hydrograph with Baseflow.png')
+
+            tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
+            plot_widget.grid(row=0, column=0)
+            return Top
+
+        df = data.copy()
+        Top = new_window(root)
+        plt.cla()
+        plt.clf()  # clear plot first
+        # figure s6
+        # df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
+        # df.set_index(df.columns[0], inplace=True)
+        df['Date/Time'] = pd.to_datetime(df['Date/Time'])
+        df.set_index('Date/Time', inplace=True)
+        dframe = df.loc[date1.get_date().strftime("%m/%d/%Y"):date2.get_date().strftime("%m/%d/%Y")]
+        ax.plot(dframe.index.values, dframe['Discharge (m3/s)'], color='blue', linestyle='-', label='discharge')
+        ax.set(xlabel="Date/Time", ylabel="Discharge(m3/s)", title="Hydrograph")
+        ax.set_xlim(min(dframe.index.values), max(dframe.index.values))
+        # ax.set_ylim(0,max(df['Discharge (m3/s)']))
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        plt.setp(ax.get_xticklabels(), rotation=45)
+        plt.tight_layout()
+        df4 = dframe['Discharge (m3/s)']
+        var1 = df4[argrelextrema(df4.to_numpy(na_value=np.nan, dtype='float64'), np.less, order=5)[0]]
+        ax.plot(var1.index.values, var1, color='red', label='baseflow')
+        ax.legend()
 
         if isExporting:
-            Top.withdraw()
-
-        def _quit():
-            plt.clf()
+            fig.savefig('Hydrograph with Baseflow.png')
             Top.destroy()
 
-        tk.Button(Top, text='Quit', command=_quit).grid(row=2, column=1)
-        plot_widget.grid(row=0, column=0)
+    datepickui = tk.Tk()
+    datepickui.title("Pick range of dates")
+    # datepickui.iconbitmap() can be used to set window icon
+    datepickui.geometry("200x200")
+    label1 = Label(datepickui, text="Starting From")
+    label1.pack()
+    date1 = DateEntry(datepickui, locale='en_UK', date_pattern='dd/mm/yyyy')
+    date1.pack()
+    label2 = Label(datepickui, text="Ends at")
+    label2.pack()
+    date2 = DateEntry(datepickui, locale='en_UK', date_pattern='dd/mm/yyyy')
+    date2.pack()
 
-        def Save():
-            fig.savefig('Hydrograph with Baseflow.png')
+    def _continue():
+        if date1 == date2:
+            messagebox.showerror('Error!', 'Must pick a range of date')
+        else:
+            print(date1.get_date())
+            checktype = date1.get_date()
+            tostr = checktype.strftime("%d/%m/%Y")
+            print(tostr)
+        datepickui.destroy()
 
-        tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
-        plot_widget.grid(row=0, column=0)
-        return Top
-
-    df = data.copy()
-    Top = new_window(root)
-    plt.cla()
-    plt.clf()  # clear plot first
-    # figure s6
-    # df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
-    # df.set_index(df.columns[0], inplace=True)
-    df['Date/Time'] = pd.to_datetime(df['Date/Time'])
-    df.set_index('Date/Time', inplace=True)
-
-    # datepicker
-    # rooT= Tk()
-    # rooT.title()
-    # rooT.geometry("600x400")
-    # def grab_date
-
-    dframe = df.loc["1/1/1967":"7/15/1967"]
-    ax.plot(dframe.index.values, dframe['Discharge (m3/s)'], color='blue', linestyle='-', label='discharge')
-    ax.set(xlabel="Date/Time", ylabel="Discharge(m3/s)", title="Hydrograph")
-    ax.set_xlim(min(dframe.index.values), max(dframe.index.values))
-    # ax.set_ylim(0,max(df['Discharge (m3/s)']))
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-    plt.setp(ax.get_xticklabels(), rotation=45)
-    plt.tight_layout()
-    df4 = dframe['Discharge (m3/s)']
-    var1 = df4[argrelextrema(df4.to_numpy(na_value=np.nan, dtype='float64'), np.less, order=5)[0]]
-    ax.plot(var1.index.values, var1, color='red', label='baseflow')
-    ax.legend()
-
-    if isExporting:
-        fig.savefig('Hydrograph with Baseflow.png')
-        Top.destroy()
-
+    tk.Button(datepickui, text="Get Date", command=_continue).pack(pady=20)
+    datepickui.mainloop()
 
 def linear_regression(data, data2, root, isExporting):
     fig = Figure(figsize=(12, 6))
@@ -243,9 +262,4 @@ def linear_regression(data, data2, root, isExporting):
         table.auto_set_font_size(False)
         table.set_fontsize(8)
         table.scale(1.2,2.5)
-        # # printing values
-        # print('Slope: ', lr.coef_)
-        # print('Intercept: ', lr.intercept_)
-        # print('Root mean squared error:', rmse)
-        # print('R2 score: ', r2)
 
