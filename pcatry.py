@@ -25,7 +25,7 @@ from sklearn.cluster import AgglomerativeClustering
 from scipy.cluster.hierarchy import dendrogram
 from scipy.cluster import hierarchy
 
-def pcapreprocess(df,dryperiodstart,dryperiodend,wetperiodstart,wetperiodend):
+def pcapreprocess(data,dryperiodstart,dryperiodend,wetperiodstart,wetperiodend):
     df=data.copy()
     dataflowplot=flowplot(df)
     datafloodplot=floodcurve(df)

@@ -19,7 +19,7 @@ def displaypca(root,result,isExporting):
     canvas = FigureCanvasTkAgg(figure, master=displayroot)
     plot_widget = canvas.get_tk_widget()
     plt.clf()
-    df1=df.copy()
+    df1=result.copy()
     def _quit():
         plt.clf()
         displayroot.destroy()

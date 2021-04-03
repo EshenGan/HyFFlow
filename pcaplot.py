@@ -40,7 +40,7 @@ def pcaplot(df):
     ax.axis('off')
     ax.set_title('Factor Score')
     
-    table = ax.table(cellText = result.values, colLabels = result.columns, loc = 'center')
+    table = ax.table(cellText = df.values, colLabels = df.columns, loc = 'center')
     table.auto_set_font_size(False)
     table.set_fontsize(7)
     table.scale(1.2,2.5)

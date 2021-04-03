@@ -35,6 +35,6 @@ def displaydendo(root,result):
 
 
     plt.clf()
-    df1=df.copy()
+    df1=result.copy()
     pp.dendodis(df1)
 

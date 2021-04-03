@@ -22,7 +22,26 @@ import tkinter as tk
 
 import matplotlib.pyplot as plt
 
-
+def colwelstep(df):
+        df.columns=['Date','Q']
+            #convert from pandas format to r format
+        with localconverter(ro.default_converter + pandas2ri.converter):
+            Colwell= ro.conversion.py2rpy(df)
+            #create r global variable Colwell and result
+        robjects.globalenv['Colwell'] = Colwell
+        robjects.globalenv['result'] =0
+            #use robject to run r script
+        robjects.r(
+            'Colwell <- as.data.frame(Colwell) '
+        )
+            #use robject to run r script
+        robjects.r(
+            'result=Colwells(Colwell, boundaries="weighted_log_class_size", s=12,indices.only=TRUE)'
+        )
+            #get the result from global variable
+        result=robjects.globalenv['result']
+        return result
+        
 def cw_indices(df):
     ax = plt.subplot()
     ax.axis('off')
@@ -41,25 +60,9 @@ def cw_indices(df):
     hydrostat =importr('hydrostats')
         #import
     # df=pd.read_excel(r"D:\UNMC\CSAI Year 2\Software Engineering Group Project\Project Documents\Telok Buing Discharge.xlsx")
-    df.columns=['Date','Q']
-        #convert from pandas format to r format
-    with localconverter(ro.default_converter + pandas2ri.converter):
-        Colwell= ro.conversion.py2rpy(df)
-        #create r global variable Colwell and result
-    robjects.globalenv['Colwell'] = Colwell
-    robjects.globalenv['result'] =0
-        #use robject to run r script
-    robjects.r(
-        'Colwell <- as.data.frame(Colwell) '
-    )
-        #use robject to run r script
-    robjects.r(
-        'result=Colwells(Colwell, boundaries="weighted_log_class_size", s=12,indices.only=TRUE)'
-    )
-        #get the result from global variable
-    result=robjects.globalenv['result'] 
 
         #storing values in dataframe to create table
+    result=colwelstep(df)
     df1 = pd.DataFrame(result, columns = ['result'], dtype = float)
 
     lst = [[df1.result[0], df1.result[1], df1.result[2], df1.result[3], df1.result[4]]]
@@ -70,3 +73,4 @@ def cw_indices(df):
     table.auto_set_font_size(False)
     table.set_fontsize(8)
     table.scale(1.2,2.5)
+
