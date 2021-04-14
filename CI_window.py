@@ -1,5 +1,5 @@
 import tkinter as tk
-import os
+import save as savee
 import matplotlib
 import matplotlib.pyplot as plt
 import Colwell as Cw
@@ -24,9 +24,7 @@ def ci_window(df, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'Colwell Indices.png'
-            plt.savefig(os.path.join(path, file))
+            savee.savepng1('Colwell Indices')
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)

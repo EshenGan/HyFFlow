@@ -1,7 +1,7 @@
 import tkinter as tk
-import os
 import pandas as pd
 import numpy as np
+import save as savee
 from scipy.signal import argrelextrema
 import matplotlib.pyplot as plt
 import matplotlib
@@ -37,9 +37,7 @@ def baseflowdiagram(data, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'Baseflow Diagram.png'
-            fig.savefig(os.path.join(path, file))
+            savee.savepng2('Baseflow Diagram', fig)
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
@@ -54,7 +52,7 @@ def baseflowdiagram(data, root):
     df.set_index(df.columns[0], inplace=True)  # set datetime column as index
     df[df.columns[0]] = df.iloc[:, 0].astype('float64')  # convert to data type float64
     # plot bar chart of discharge against datetime
-    ax.bar(df.index.values, df.iloc[:,0], 1.85, label="discharge", snap=False)
+    ax.bar(df.index.values, df.iloc[:, 0], 1.85, label="discharge", snap=False)
     ax.set(xlabel="Date/Time", ylabel="Discharge(m3/s)", title="Baseflow Diagram")  # labeling and title
     ax.set_xlim(min(df.index.values), max(df.index.values))  # setting x axis limit for bar chart
     # ax.set_ylim(0,max(df['Discharge (m3/s)']))
@@ -89,9 +87,7 @@ def hydrograph_baseflow(data, root):
             plot_widget.grid(row=0, column=0)
 
             def save():
-                path = os.path.abspath('SavedFiles')
-                file = 'Hydrograph with Baseflow.png'
-                fig.savefig(os.path.join(path, file))
+                savee.savepng2('Hydrograph with Baseflow', fig)
 
             tk.Button(top, text='Save', command=save).grid(row=2, column=0)
             plot_widget.grid(row=0, column=0)
@@ -167,9 +163,7 @@ def linear_regression(data, data2, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'Rainfall-runoff Relations.png'
-            fig.savefig(os.path.join(path, file))
+            savee.savepng2('Rainfall-runoff Relations', fig)
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
@@ -195,9 +189,7 @@ def linear_regression(data, data2, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'Rainfall-runoff relations Details.png'
-            fig1.savefig(os.path.join(path, file))
+            savee.savepng2('Rainfall-runoff relations Details', fig1)
 
         tk.Button(top2, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)

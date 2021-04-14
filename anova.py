@@ -1,7 +1,7 @@
 import tkinter as tk
 import pandas as pd
 import numpy as np
-import os
+import save as savee
 import anovafunctions as an
 from statsmodels.formula.api import ols
 import statsmodels.api as sm
@@ -35,9 +35,7 @@ def anovaa(df, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'ANOVA.xlsx'
-            aov_table.to_excel(os.path.join(path, file))
+            savee.saveexcel('ANOVA', model)
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
@@ -75,9 +73,7 @@ def posthoc(df, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'ANOVA_Post_Hoc.png'
-            plt.savefig(os.path.join(path, file))
+            savee.savepng1('ANOVA_Post_Hoc')
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
@@ -113,9 +109,7 @@ def barchart(df, root):
         plot_widget.grid(row=0, column=0)
 
         def save():
-            path = os.path.abspath('SavedFiles')
-            file = 'Rainfall stations Mean Chart.png'
-            plt.savefig(os.path.join(path, file))
+            savee.savepng1('Rainfall stations Mean Chart')
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
