@@ -37,10 +37,6 @@ def loadpackages(loadroot):
 
     label3_file = ttk.Label(file_frame, text="")
     label3_file.place(x=0, y=60)
-
-    # button for loading saved excel data
-    button2 = Button(root, text="Load File", bg="lightblue", fg="black", command=lambda: load_excel_data())
-    button2.place(x=100, y=0)
     
     # tabs
     my_notebook = ttk.Notebook(root)
@@ -194,6 +190,7 @@ def loadpackages(loadroot):
                     data_discharge.dropna(inplace=True)
                     messagebox.showinfo("Information", "NULL values removed, file is imported successfully")
                     newwindow.destroy()
+                    load_excel_data()
 
                 b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold",
                             command=remove_na)
@@ -202,6 +199,7 @@ def loadpackages(loadroot):
                 def no_remove():
                     messagebox.showinfo("Information", "File imported, NULL values in excel file ignored.")
                     newwindow.destroy()
+                    load_excel_data()
 
                 b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold",
                             command=no_remove)
@@ -222,6 +220,7 @@ def loadpackages(loadroot):
                     data_rainfall.dropna(inplace=True)
                     messagebox.showinfo("Information", "NULL values removed, file is imported successfully")
                     newwindow.destroy()
+                    load_excel_data()
 
                 b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold",
                             command=remove_na)
@@ -230,6 +229,7 @@ def loadpackages(loadroot):
                 def no_remove():
                     messagebox.showinfo("Information", "File imported, NULL values in excel file ignored.")
                     newwindow.destroy()
+                    load_excel_data()
 
                 b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold",
                             command=no_remove)
@@ -267,6 +267,7 @@ def loadpackages(loadroot):
             def _continue():
                 messagebox.showinfo("Innformation", "file is imported successfully ")
                 newwindow.destroy()
+                load_excel_data()
 
             b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="black", font="bold",
                         command=_continue)
@@ -302,6 +303,7 @@ def loadpackages(loadroot):
             def _continue():
                 messagebox.showinfo("Innformation", "file is imported successfully ")
                 newwindow.destroy()
+                load_excel_data()
 
             b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="black", font="bold",
                         command=_continue)
