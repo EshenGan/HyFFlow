@@ -137,6 +137,8 @@ def loadpackages(loadroot):
 
         # if only rainfall load
         if file_path2 != "":
+            for i in tv2.get_children():
+                tv2.delete(i)
             my_notebook.add(frame2, text="Rainfall")
             my_notebook.select(1)
             tv2["column"] = list(df2.columns)
@@ -151,6 +153,8 @@ def loadpackages(loadroot):
         # if Discharge is loaded
         
         if file_path != "":
+            for i in tv1.get_children():
+                tv1.delete(i)
             my_notebook.add(frame1, text="Discharge")
             my_notebook.select(0)
             tv1["column"] = list(df.columns)
