@@ -17,7 +17,7 @@ def colwellsplit(dframe, colnum):
     
 
 # code for stations option UI
-def selectwinfunction(df, mainroot):
+def selectwinfunction(df, mainroot,rd):
     selectwindow = tk.Toplevel(mainroot)
     selectwindow.iconbitmap('iconlogo.ico')
     df2 = df.iloc[:, 1:].copy()
@@ -41,7 +41,8 @@ def selectwinfunction(df, mainroot):
             resultdf = colwellsplit(df, g)
         
         selectwindow.withdraw()
-        Colwellwindow.ci_window(resultdf, selectwindow)
+        Colwellwindow.ci_window(resultdf, selectwindow,rd)
+        
 
     def quit_me():
         selectwindow.quit()

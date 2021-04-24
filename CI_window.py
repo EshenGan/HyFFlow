@@ -7,7 +7,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 matplotlib.use('TkAgg')
 
 
-def ci_window(df, root):
+def ci_window(df, root,rd):
     
     def new_window(root1):
         figure, ax = plt.subplots(figsize=(13, 5), dpi=100)
@@ -32,10 +32,14 @@ def ci_window(df, root):
 
     window = new_window(root)
     plt.clf()
-    Cw.cw_indices(df)
+    df2=df.copy()
+    Cw.cw_indices(df2)
     
     def quit_me():
-        window.quit()
+
         window.destroy()
-        root.destroy()
+        if rd ==1:
+            root.quit()
+            root.destroy()
+
     window.protocol("WM_DELETE_WINDOW", quit_me)
