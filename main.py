@@ -364,8 +364,8 @@ def loadpackages(loadroot):
     p2_analysis.add_cascade(label="Flow Metrics", menu=p2menu)
 
     # drop down list of analyses p2
-    p2menu.add_checkbutton(label="Colwell's Indices(Rainfall)", command=lambda: c4r.selectwinfunction(df2, root))
-    p2menu.add_checkbutton(label="Colwell's Indices(Discharge) ", command=lambda: C4d.ci_window(df, root))
+    p2menu.add_checkbutton(label="Colwell's Indices(Rainfall)", command=lambda: c4r.selectwinfunction(df2, root,1))
+    p2menu.add_checkbutton(label="Colwell's Indices(Discharge) ", command=lambda: C4d.ci_window(df, root,2))
     p2menu.add_checkbutton(label="IHA", command=lambda: iha.openiha())
 
     # 'Package 3'
