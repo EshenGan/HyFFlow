@@ -1,8 +1,5 @@
 from tkinter import *
-from PIL import ImageTk,Image
-import main as mn
-
-
+from PIL import ImageTk, Image
 
 
 def openguide(loadroot):
@@ -90,17 +87,6 @@ def openguide(loadroot):
 
     backbutton = Button(root, text="Back", height="2", width="20", bg="lightblue", fg="black", command=back)
     backbutton.place(x=600, y=650)
-    
-    def Home():
-        mn.loadpackages(loadroot)
-        loadroot.withdraw()
-
-        root.destroy()
-
-
-    Homebutton = Button(root, text="Home", height="2", width="20", bg="lightblue", fg="black", command=Home)
-    Homebutton.place(x=400, y=650)
-
 
     img7 = ImageTk.PhotoImage(Image.open(r"pca1.png"))
     img8 = ImageTk.PhotoImage(Image.open(r"pca2.png"))

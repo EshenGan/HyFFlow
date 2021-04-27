@@ -333,6 +333,9 @@ def loadpackages(loadroot):
     def closepackage():
         root.destroy()
         loadroot.deiconify()
+        loadroot.destroy()
+
+
     # 'File'
     filemenu = Menu(menu, tearoff=0)
     menu.add_cascade(label="File", menu=filemenu)
