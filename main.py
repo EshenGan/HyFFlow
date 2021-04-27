@@ -11,6 +11,8 @@ import PCA_AHC_UI as Pau
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
 from pandas import DataFrame
+import usermanual as um
+import ntpath
 
 df = DataFrame()
 df2 = DataFrame()
@@ -20,12 +22,12 @@ scannum = 0
 scancounter1 = 0
 scancounter2 = 0
 
-
+filename2=""
+filename1=""
 def loadpackages(loadroot):
     loadroot.withdraw()
     root = Toplevel(loadroot)
     root.geometry("733x566")
-    root.iconbitmap('iconlogo.ico')
     root.state('zoomed')
 
     # code for uploading saved data file
@@ -38,6 +40,9 @@ def loadpackages(loadroot):
     label3_file = ttk.Label(file_frame, text="")
     label3_file.place(x=0, y=60)
     
+
+
+
     # tabs
     my_notebook = ttk.Notebook(root)
     my_notebook.place(x=310, y=0, height=785, width=1230)
@@ -81,8 +86,9 @@ def loadpackages(loadroot):
 
     def load_excel_data():
         # if your file is valid this will load the file into the treeview
-        file_path = label2_file["text"]
-        file_path2 = label3_file["text"]
+        file_path = filename1
+        file_path2 = filename2
+
         global df 
         global df2 
         global lg_df
@@ -168,8 +174,9 @@ def loadpackages(loadroot):
 
     def scanfile():
 
-        file_path = label2_file["text"]
-        file_path2 = label3_file["text"]
+        file_path = filename1
+        file_path2 = filename2
+
         global scannum
         global scancounter1
         global scancounter2
@@ -196,7 +203,7 @@ def loadpackages(loadroot):
                     newwindow.destroy()
                     load_excel_data()
 
-                b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold",
+                b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="black", font="bold",
                             command=remove_na)
                 b1.place(x=130, y=150)
 
@@ -205,7 +212,7 @@ def loadpackages(loadroot):
                     newwindow.destroy()
                     load_excel_data()
 
-                b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold",
+                b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="black", font="bold",
                             command=no_remove)
                 b2.place(x=280, y=150)
             else:
@@ -227,7 +234,7 @@ def loadpackages(loadroot):
                     newwindow.destroy()
                     load_excel_data()
 
-                b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="white", font="bold",
+                b1 = Button(newwindow, text="Yes", height=1, width=7, bg="lightblue", fg="black", font="bold",
                             command=remove_na)
                 b1.place(x=130, y=150)
 
@@ -236,7 +243,7 @@ def loadpackages(loadroot):
                     newwindow.destroy()
                     load_excel_data()
 
-                b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="white", font="bold",
+                b2 = Button(newwindow, text="No", height=1, width=7, bg="lightblue", fg="black", font="bold",
                             command=no_remove)
                 b2.place(x=280, y=150)
             else:
@@ -246,10 +253,12 @@ def loadpackages(loadroot):
 
     # importing the rainfall data
     def import_rainfall():
+        global filename2
+        filename2=""
         filename2 = filedialog.askopenfilename(initialdir="/",
                                                title="Select A File",
                                                filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
-        label3_file.configure(text=filename2)
+        label3_file.configure(text=ntpath.basename(filename2))
         if filename2 != "":
             newwindow = Toplevel(root)
             newwindow.title("HyFFlow")
@@ -282,11 +291,13 @@ def loadpackages(loadroot):
 
     # importing the discharge data
     def import_discharge():
-        filename2 = filedialog.askopenfilename(initialdir="/",
+        global filename1
+        filename1=""
+        filename1 = filedialog.askopenfilename(initialdir="/",
                                                title="Select A File",
                                                filetype=(("xlsx files", "*.xlsx"), ("all files", "*.*")))
-        label2_file.configure(text=filename2)
-        if filename2 != "":
+        label2_file.configure(text=ntpath.basename(filename1))
+        if filename1 != "":
             newwindow = Toplevel(root)
             newwindow.title("HyFFlow")
             newwindow.geometry("500x200")
@@ -366,8 +377,8 @@ def loadpackages(loadroot):
     p2_analysis.add_cascade(label="Flow Metrics", menu=p2menu)
 
     # drop down list of analyses p2
-    p2menu.add_checkbutton(label="Colwell's Indices(Rainfall)", command=lambda: c4r.selectwinfunction(df2, root))
-    p2menu.add_checkbutton(label="Colwell's Indices(Discharge) ", command=lambda: C4d.ci_window(df, root))
+    p2menu.add_checkbutton(label="Colwell's Indices(Rainfall)", command=lambda: c4r.selectwinfunction(df2, root,1))
+    p2menu.add_checkbutton(label="Colwell's Indices(Discharge) ", command=lambda: C4d.ci_window(df, root,2))
     p2menu.add_checkbutton(label="IHA", command=lambda: iha.openiha())
 
     # 'Package 3'
@@ -395,7 +406,7 @@ def loadpackages(loadroot):
     # Help Menu
     helpmenu = Menu(menu, tearoff=0)
     menu.add_cascade(label="Help", menu=helpmenu)
-    helpmenu.add_command(label="User Manual/User Guide", command=About)
+    helpmenu.add_command(label="User Manual/User Guide", command=lambda: um.openguide(loadroot))
 
     def quit_me():
         root.destroy()
