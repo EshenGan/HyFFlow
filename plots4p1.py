@@ -20,7 +20,7 @@ def flowplot(df):
     
     data_dischargesorted=calculate_return2(data,data.columns[1])
     n=len(df3)
-    
+    # split data by years
     for y in range(n-1):
         datalist= DataFrame(df3[y],columns=data.columns)
         dataplot=calculate_return2(datalist,datalist.columns[1])
@@ -29,16 +29,19 @@ def flowplot(df):
         col=dataplot[dataplot.columns[2]]
         culmax=col.max()
         culmin=col.min()
+        # if the years have highest discharge make a legend
         if culmax==maxi:
             temp=dataplot.groupby('year',as_index=False).count()
             temp.set_index('year')
             c=temp.year[0]
             tr=plt.plot(dataplot['exceeding probability'],colum,label=c)
+        # if the years have lowest discharge make a legend
         elif culmin==mini:
             temp=dataplot.groupby('year',as_index=False).count()
             temp.set_index('year')
             c=temp.year[0]
             try2=plt.plot(dataplot['exceeding probability'],colum,label=c)
+        # if not highest and lowest just plot
         else:
             plt.plot(dataplot['exceeding probability'],colum,label=None)
             
@@ -52,10 +55,11 @@ def flowplot(df):
 def hydrograph(df,data,gs):
     #plot hydro with hyeto
     ax = plt.subplot(gs[1])
+    # add new columns month and year
     df[df.columns[0]]=pd.to_datetime(df[df.columns[0]])   
     df['months'] = df[df.columns[0]].apply(lambda x:x.strftime('%B'))
     df['year'] = pd.DatetimeIndex(df[df.columns[0]]).year
-
+    # group data by duration of 1 month
     dfmean=DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean()).reset_index()
     try1=ax.plot(dfmean[dfmean.columns[0]],dfmean[dfmean.columns[1]],'b-', label='mean')#plot monthly mean
     try2=ax.plot(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean().rolling(10).mean(),'r', label='moving average')#plot moving average 

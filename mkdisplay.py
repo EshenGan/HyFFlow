@@ -9,10 +9,13 @@ matplotlib.use('TkAgg')
 
 
 def tableplot(df):
+    
     ax = plt.subplot()
     ax.axis('off')
     ax.set_title('Man-Kendall Test')
+    #plot table
     table = ax.table(cellText=df.values, colLabels=df.columns, loc='center')
+    # set the table size
     table.auto_set_font_size(False)
     table.set_fontsize(7)
     table.scale(1.2, 2.5)
@@ -25,12 +28,16 @@ def displaymankendall(root, result):
     figure, ax = plt.subplots(figsize=(13, 5))
     canvas = FigureCanvasTkAgg(figure, master=displayroot)
     plot_widget = canvas.get_tk_widget()
+    #convvert data into dataframe
     df = pd.DataFrame(result, columns=['result'])
+    #convert dataframe into list of result basically from vertical frame to horizontal list
     listt = [[df.result[0], df.result[1], df.result[2], df.result[3], df.result[4], df.result[5], df.result[6], df.result[7], df.result[8]]]
+    # convert horizontal list to frame with columns
     df1 = DataFrame(listt, columns=['trend', 'h', 'p', 'z', 'Tau', 's', 'var_s', 'slope', 'intercept'])
 
     plt.clf()
     df = df1.copy()
+    # call function to plot
     tableplot(df)
 
     def _quit():

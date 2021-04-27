@@ -13,18 +13,24 @@ matplotlib.use('TkAgg')
 
 def pcaplot(f, df):
     pcadf = df.copy()
+    # set up factor analysis
     fa = decomposition.FactorAnalysis(n_components=2)
+    #fit dataframe into factor analysis
     fa.fit(pcadf)
     scorelist = list()
+    #store factor score in list
     for score in fa.score_samples(pcadf):
         scorelist.append(score)
+    #convert list to dataframe
     df = DataFrame(scorelist, columns=['Factor Score'])
     rounded_df = df.round(6)
+    #plot table with pandastable library
     pt = Table(f, dataframe=rounded_df)
     pt.show()
 
 
 def dendoplot(df):
+    # default setting of ahc
     cluster = AgglomerativeClustering(n_clusters=2, affinity='euclidean', memory=None, connectivity=None,
                                       compute_full_tree='auto', linkage='ward', distance_threshold=None,
                                       compute_distances=True)

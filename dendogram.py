@@ -8,7 +8,9 @@ matplotlib.use('TkAgg')
 
 
 def displaydendo(root, result):
+    #hide previous window
     root.withdraw()
+    #set canvas
     dendoroot = tk.Toplevel(root)
     dendoroot.iconbitmap('iconlogo.ico')
     figure, ax1 = plt.subplots(figsize=(13, 5), dpi=100)
@@ -18,6 +20,7 @@ def displaydendo(root, result):
     def _quit():
         plt.clf()
         dendoroot.destroy()
+        root.deiconify()
 
     tk.Button(dendoroot, text='Quit', command=_quit).grid(row=2, column=1)
     plot_widget.grid(row=0, column=0)
@@ -26,7 +29,7 @@ def displaydendo(root, result):
         savee.savepng1('AHC Dendogram')
 
     tk.Button(dendoroot, text='Save', command=save).grid(row=2, column=0)
-
+    # call ploting function
     plt.clf()
     df1 = result.copy()
     pp.dendoplot(df1)
@@ -35,7 +38,7 @@ def displaydendo(root, result):
         dendoroot.quit()
         dendoroot.destroy()
         root.deconify()
-        root.destroy()
+
 
     dendoroot.protocol("WM_DELETE_WINDOW", quit_me)
     dendoroot.mainloop()

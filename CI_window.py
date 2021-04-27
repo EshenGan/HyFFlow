@@ -10,6 +10,7 @@ matplotlib.use('TkAgg')
 def ci_window(df, root,rd):
     
     def new_window(root1):
+        #set canvas
         figure, ax = plt.subplots(figsize=(13, 5), dpi=100)
         top = tk.Toplevel(root1)
         top.iconbitmap('iconlogo.ico')
@@ -29,7 +30,7 @@ def ci_window(df, root,rd):
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
         return top
-
+    # call function to plot
     window = new_window(root)
     plt.clf()
     df2=df.copy()

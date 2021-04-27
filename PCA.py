@@ -38,7 +38,7 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
 
     df['base'] = df['base'].fillna(0)
     df['diff'] = df[df.columns[0]] - df['base']
-
+    # extract date which base =discharge
     data = df.loc[df['diff'] == 0].copy()
     durations = [None] * len(data)
     for i in range(len(data) - 1):
@@ -47,9 +47,10 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
     data.reset_index(inplace=True)
     data[data.columns[0]] = pd.to_datetime(data[data.columns[0]])
     data['duration'] = None
+    # caculate duration between first row date to second row date and etc
     for l in range(len(data) - 1):
         data.loc[l, ['duration']] = durations[l].days
-
+    # set date to datetimeindes
     data['year'] = pd.DatetimeIndex(data[data.columns[0]]).year
     data['month'] = pd.DatetimeIndex(data[data.columns[0]]).month
 
@@ -95,6 +96,7 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
     l = 0
     df.reset_index(inplace=True)
     longestduration = 0
+    # from original dataframe extract out row with dates in the duration and put in different dataframe, each dataframe is a event
     for i in range(length):
         start_date = datalist3[i].iloc[0, 0]
 
@@ -151,7 +153,7 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
                         m]
 
     pcadf = DataFrame(index=np.arange(l), columns=np.arange(longestduration + 1))
-
+    # convert dataframe of date and discharge to event to diffrences
     for i in range(l):
         series = datalist4[i]['diff']
         list1 = series.tolist()

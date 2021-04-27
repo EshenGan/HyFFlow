@@ -8,9 +8,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
 
 
-
+#plot flood frequency curve
 def flood_curve(root,data):
     def new_window(root):
+        # set canvas
         fig, ax = plt.subplots(figsize=(12, 6))
         Top = tk.Toplevel(root)
         Top.iconbitmap('iconlogo.ico')
@@ -29,13 +30,13 @@ def flood_curve(root,data):
 
         tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
-    
+    # call function to plot
     new_window(root)
     plt.clf() # clear plot first
     pf.floodcurve(data)
 
 def flow_curve(root,data):
-
+    # set canvas
     def new_window(root):
         fig, ax = plt.subplots(figsize=(12, 6))
         Top = tk.Toplevel(root)
@@ -55,7 +56,7 @@ def flow_curve(root,data):
 
         tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
-    
+    #call function to plot
     df=data.copy()
     new_window(root)
     plt.clf() # clear plot first
@@ -89,7 +90,7 @@ def hydroOnly(root, data):
     plt.clf()  # clear plot first
     pf.hydrographOnly(df)
     
-
+# hydrograph and hyetograph plot
 def hydro_graph(root, data, data2):
 
     def new_window(root):
@@ -124,7 +125,7 @@ def hydro_graph(root, data, data2):
 
     
 
-
+# plot median of discharge
 def medianDischarge(root, data):
 
     def new_window(root):
@@ -151,7 +152,7 @@ def medianDischarge(root, data):
     new_window(root)
     plt.clf()  # clear plot first
     pf.medianmonthDis(df)
-
+# plot median of rainfall
 def median_Rain(root, data2):
 
     def new_window(root):
@@ -173,7 +174,7 @@ def median_Rain(root, data2):
 
         tk.Button(Top, text='Save', command=Save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
-    
+    # get the column of station select
     df = data2.copy()
     l = len(data2.columns)-1
     Top2 = tk.Toplevel(root)
@@ -191,7 +192,7 @@ def median_Rain(root, data2):
         
         plt.clf() # clear plot first
         new_window(root)
-
+        # pass data and column number to function to plot
         pf.medianmonthRain(df, g)
     tk.Button(Top2, text='OK', command=_continue).pack(anchor=tk.W)
     
