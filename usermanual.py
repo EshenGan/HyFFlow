@@ -1,7 +1,7 @@
 from tkinter import *
 from PIL import ImageTk, Image
 
-
+#this funtion creates the first window with the first instrucuons using images with descriptions 
 def openguide(loadroot):
 
     root = Toplevel(loadroot)
@@ -62,7 +62,7 @@ def openguide(loadroot):
 
 
 
-
+#this funtion has a back button which allows the user to click when they wanna see the fist screen or the instructions
     def back():
         can1.delete("all")
         can1.create_image(0, 0, anchor=NW, image=img1)
@@ -92,6 +92,8 @@ def openguide(loadroot):
     img8 = ImageTk.PhotoImage(Image.open(r"pca2.png"))
     img9 = ImageTk.PhotoImage(Image.open(r"iha.png"))
 
+    
+    #this funtion deletes the first instruction and images and changes to new ones in the second window ater user clicks on next button
     def next():
 
         can1.delete("all")
