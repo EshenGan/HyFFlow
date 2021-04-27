@@ -3,6 +3,7 @@ import time
 import statsmodels.api as sm
 import matplotlib
 import matplotlib.pyplot as plt
+from tkinter import messagebox
 matplotlib.use('TkAgg')
 
 
@@ -17,7 +18,7 @@ def savepng1(filename):
     # if exist, use it
     else:
         plt.savefig(os.path.join(path, fullfilename))  # save plots as images with filename specified above in path specified above
-
+    messagebox.showinfo("Information", "Successfully saved in SavedFiles folder")
 
 def savepng2(filename, figure):
     fullfilename = filename + time.strftime(" %Y-%m-%d %H%M%S") + ".png"
@@ -27,7 +28,7 @@ def savepng2(filename, figure):
         figure.savefig(os.path.join(path, fullfilename))
     else:
         figure.savefig(os.path.join(path, fullfilename))  # save plots as images with filename specified above in path specified above
-
+    messagebox.showinfo("Information", "Successfully saved in SavedFiles folder")
 
 def saveexcel(filename, model):
     aov_table = sm.stats.anova_lm(model)
@@ -38,3 +39,4 @@ def saveexcel(filename, model):
         aov_table.to_excel(os.path.join(path, fullfilename))
     else:
         aov_table.to_excel(os.path.join(path, fullfilename))  # save plots as images with filename specified above in path specified above
+    messagebox.showinfo("Information", "Successfully saved in SavedFiles folder")
