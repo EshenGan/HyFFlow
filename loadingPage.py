@@ -1,11 +1,11 @@
 from tkinter import *
 import main as mn
+import usermanual as um
 
 
 loadroot = Tk()
 loadroot.title("HyFFlow")
 loadroot.geometry("415x410")
-loadroot.iconbitmap('iconlogo.ico')
 loadroot.resizable(0, 0)
 
 # Title label
@@ -19,7 +19,8 @@ startbutton = Button(loadroot, text="HOME", height="5", width="40", bg="lightblu
 startbutton.place(x=60, y=70)
 
 # guide button leads to user manual
-guidebutton = Button(loadroot, text="GUIDE", height="5", width="40", bg="lightblue", fg="black")
+guidebutton = Button(loadroot, text="GUIDE", height="5", width="40", bg="lightblue", fg="black",
+                     command=lambda: um.openguide(loadroot))  
 guidebutton.place(x=60, y=170)
 
 
@@ -28,8 +29,8 @@ def exitt():
     loadroot.quit()
 
 
-guidebutton = Button(loadroot, text="EXIT", height="5", width="40", bg="lightblue", fg="black", command=exitt)
-guidebutton.place(x=60, y=270)
+exitbutton = Button(loadroot, text="EXIT", height="5", width="40", bg="lightblue", fg="black", command=exitt)
+exitbutton.place(x=60, y=270)
 
 
 def quit_me():
