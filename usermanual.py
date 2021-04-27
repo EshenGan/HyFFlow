@@ -6,14 +6,14 @@ import main as mn
 
 
 def openguide(loadroot):
-    loadroot.withdraw()
+
     root = Toplevel(loadroot)
     root.geometry("1300x800")
     root.resizable(0, 0)
 
     can1 = Canvas(root, width = 400, height = 400)
     can1.pack()
-    img1 = ImageTk.PhotoImage(Image.open("selectfile.png"))
+    img1 = ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\selectfile.png"))
     can1.place(x=0,y=30)
     seltxt=Label(root, text="NO 1. Under the file tab, go to 'select file' option and \n choose  the data type you want to import", fg='black', font=("Times new roman", 12))
     seltxt.place(x=60, y=250)
@@ -21,7 +21,7 @@ def openguide(loadroot):
 
     can2 = Canvas(root, width = 400, height = 400)
     can2.pack()
-    img2= ImageTk.PhotoImage(Image.open("scanfiles.png"))
+    img2= ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\scanfiles.png"))
     can2.place(x=440,y=20)
     scantxt=Label(root, text="NO 2.click Yes to scan the files to search for missing \n values or click No to ignore the mising values in the file.", fg='black', font=("Times new roman", 12))
     scantxt.place(x=480, y=255)
@@ -30,7 +30,7 @@ def openguide(loadroot):
 
     can3= Canvas(root, width = 400, height = 400)
     can3.pack()
-    img3= ImageTk.PhotoImage(Image.open("formatofdata.png"))
+    img3=ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\formatofdata.png"))
     can3.place(x=840,y=20)
     formattxt=Label(root, text="NO 3.the dataframe is shown above, the first column is the data \n and  the second column is the discharge/rainfall.", fg='black', font=("Times new roman", 12))
     formattxt.place(x=870, y=255)
@@ -39,7 +39,7 @@ def openguide(loadroot):
 
     can4= Canvas(root, width = 400, height = 400)
     can4.pack()
-    img4= ImageTk.PhotoImage(Image.open("selectmedian.png"))
+    img4= ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\selectmedian.png"))
     can4.place(x=0,y=330)
     seltxt2=Label(root, text="NO 4.To perform analysis on median Rainfall under \n package1,  first choose the rainfall station then click ok", fg='black', font=("Times new roman", 12))
     seltxt2.place(x=40, y=560)
@@ -48,7 +48,7 @@ def openguide(loadroot):
 
     can5= Canvas(root, width = 400, height = 400)
     can5.pack()
-    img5= ImageTk.PhotoImage(Image.open("selstation.png"))
+    img5= ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\selstation.png"))
     can5.place(x=390,y=330)
     sel=Label(root, text="NO.5 To perform analysis on Colwell's Indices under \n package2,  first choose the rainfall station then click ok", fg='black', font=("Times new roman", 12))
     sel.place(x=470, y=580)
@@ -57,7 +57,7 @@ def openguide(loadroot):
 
     can6= Canvas(root, width = 400, height = 400)
     can6.pack()
-    img6= ImageTk.PhotoImage(Image.open("man-kendall.png"))
+    img6= ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\man-kendall.png"))
     can6.place(x=830,y=300)
     mankendalltxt=Label(root, text="NO6.To perform analysis on classic man-kendall Test under \n package4,  first choose the rainfall station then choose \n the start month and end month then click ok", fg='black', font=("Times new roman", 12))
     mankendalltxt.place(x=880, y=570)
@@ -91,13 +91,20 @@ def openguide(loadroot):
     backbutton = Button(root, text="Back", height="2", width="20", bg="lightblue", fg="black", command=back)
     backbutton.place(x=600, y=650)
     
-    Homebutton = Button(root, text="Home", height="2", width="20", bg="lightblue", fg="black", command=lambda: mn.loadpackages(loadroot))
+    def Home():
+        mn.loadpackages(loadroot)
+        loadroot.withdraw()
+
+        root.destroy()
+
+
+    Homebutton = Button(root, text="Home", height="2", width="20", bg="lightblue", fg="black", command=Home)
     Homebutton.place(x=400, y=650)
 
 
-    img7 = ImageTk.PhotoImage(Image.open("pca1.png"))
-    img8 = ImageTk.PhotoImage(Image.open("pca2.png"))
-    img9 = ImageTk.PhotoImage(Image.open("iha.png"))
+    img7 = ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\pca1.png"))
+    img8 = ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\pca2.png"))
+    img9 = ImageTk.PhotoImage(Image.open(r"C:\Users\kumab\Downloads\HyFFlow_LatestVersion\HyFFlow_LatestVersion\HyFFlow_LatestVersion\iha.png"))
 
     def next():
 
@@ -137,12 +144,8 @@ def openguide(loadroot):
 
     def quit_me():
         root.destroy()
-        loadroot.deiconify()
 
 
     root.protocol("WM_DELETE_WINDOW", quit_me)
-
-
-
 
 
