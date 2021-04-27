@@ -26,7 +26,7 @@ def displaydendo(root, result):
     plot_widget.grid(row=0, column=0)
 
     def save():
-        savee.savepng1('AHC Dendogram')
+        savee.savepng1('AHC Dendrogram')
 
     tk.Button(dendoroot, text='Save', command=save).grid(row=2, column=0)
     # call ploting function

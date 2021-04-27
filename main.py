@@ -326,10 +326,6 @@ def loadpackages(loadroot):
                         command=_continue)
             b2.place(x=280, y=150)
 
-    # About
-    def About():
-        print(".......")
-
     # Toolbar menu
     menu = Menu(root)
     root.config(menu=menu)
@@ -387,7 +383,7 @@ def loadpackages(loadroot):
 
     # submenu for analysis p3
     p3menu = Menu(p3_analysis, tearoff=0)
-    p3_analysis.add_cascade(label="Flow Metrics", menu=p3menu)
+    p3_analysis.add_cascade(label="Hydrograph Shape", menu=p3menu)
 
     # Drop down list for analyses p3
     p3menu.add_checkbutton(label="PCA & AHC", command=lambda: Pau.pca_ahc_ui(root, df))

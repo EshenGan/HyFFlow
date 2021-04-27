@@ -27,7 +27,7 @@ def displaypca(root, result):
     def dendo():
         dd.displaydendo(tableroot, df1)
 
-    tk.Button(tableroot, text='dendogram', command=dendo).grid(row=2, column=0)
+    tk.Button(tableroot, text='dendrogram', command=dendo).grid(row=2, column=0)
     pp.pcaplot(tableroot, df1)
 
     def quit_me():
