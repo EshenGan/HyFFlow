@@ -23,20 +23,21 @@ def baseflowdiagram(data, root):
     fig = Figure(figsize=(12, 6))
     ax = fig.add_subplot()
 
+    # function to generate a window for visualized data display
     def new_window(root1):
         top = tk.Toplevel(root1)
         top.iconbitmap('iconlogo.ico')
         canvas = FigureCanvasTkAgg(fig, master=top)
         plot_widget = canvas.get_tk_widget()
 
-        def _quit():
+        def _quit():  # function to close graph/table window
             plt.clf()
             top.destroy()
 
         tk.Button(top, text='Quit', command=_quit).grid(row=2, column=1)
         plot_widget.grid(row=0, column=0)
 
-        def save():
+        def save():  # saving feature
             savee.savepng2('Baseflow Diagram', fig)
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
@@ -44,10 +45,9 @@ def baseflowdiagram(data, root):
         return top
 
     df = data.copy()
-    new_window(root)
+    new_window(root)  # set up the window
     plt.cla()  # clear axis
     plt.clf()  # clear figure
-    # figure s5
     df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])  # change  to pandas datetime format
     df.set_index(df.columns[0], inplace=True)  # set datetime column as index
     df[df.columns[0]] = df.iloc[:, 0].astype('float64')  # convert to data type float64
@@ -55,12 +55,11 @@ def baseflowdiagram(data, root):
     ax.bar(df.index.values, df.iloc[:, 0], 1.85, label="discharge", snap=False)
     ax.set(xlabel="Date/Time", ylabel="Discharge(m3/s)", title="Baseflow Diagram")  # labeling and title
     ax.set_xlim(min(df.index.values), max(df.index.values))  # setting x axis limit for bar chart
-    # ax.set_ylim(0,max(df['Discharge (m3/s)']))
     ax.spines['top'].set_visible(False)  # removing top black line of barchart plot place
     ax.spines['right'].set_visible(False)  # removing right black line of barchart plot place
     plt.setp(ax.get_xticklabels(), rotation=45)  # rotate x axis label direction
     plt.tight_layout()
-    dfd = df.iloc[:, 0]
+    dfd = df.iloc[:, 0]  # reading and writing  all the rows and first column of df into another dataframe,dfd
     # calculating baseflow(local minima) with interval of 5
     var = dfd[argrelextrema(dfd.to_numpy(dtype='float64', na_value=np.nan), np.less, order=5)[0]]
     var.interpolate()  # interpolate the data
@@ -69,7 +68,7 @@ def baseflowdiagram(data, root):
 
 
 def hydrograph_baseflow(data, root):
-    def run_plot():  # function to be called to plot hydrograph with baseflow line only when date range is selected
+    def run_plot():  # function to be called to plot hydrograph with baseflow line if date range is selected
         fig = Figure(figsize=(12, 6))
         ax = fig.add_subplot()
 
@@ -97,7 +96,6 @@ def hydrograph_baseflow(data, root):
         new_window(root)
         plt.cla()
         plt.clf()
-        # figure s6
         df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
         df.set_index(df.columns[0], inplace=True)
         # slicing discharge data according to selected date time range
@@ -106,20 +104,20 @@ def hydrograph_baseflow(data, root):
         ax.plot(dframe.index.values, dframe.iloc[:, 0], color='blue', linestyle='-', label='discharge')
         ax.set(xlabel="Date/Time", ylabel="Discharge(m3/s)", title="Hydrograph with Baseflow")
         ax.set_xlim(min(dframe.index.values), max(dframe.index.values))
-        # ax.set_ylim(0,max(df['Discharge (m3/s)']))
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
         plt.setp(ax.get_xticklabels(), rotation=45)
         plt.tight_layout()
-        df4 = dframe.iloc[:, 0]
+        df4 = dframe.iloc[:, 0]  # reading and writing  all the rows and first column of df into another dataframe,df4
         var1 = df4[argrelextrema(df4.to_numpy(na_value=np.nan, dtype='float64'), np.less, order=5)[0]]
         ax.plot(var1.index.values, var1, color='red', label='baseflow')
         ax.legend()
 
+    # setting up date range selection UI 
     datepickui = tk.Tk()
-    datepickui.title("Pick range of dates")
-    datepickui.geometry("200x200")
-    datepickui.iconbitmap('iconlogo.ico')
+    datepickui.title("Pick range of dates")  # setting up title
+    datepickui.geometry("200x200")  # window size
+    datepickui.iconbitmap('iconlogo.ico')  # setting icon
     label1 = Label(datepickui, text="Starting From")
     label1.pack()
     date1 = DateEntry(datepickui, locale='en_UK', date_pattern='dd/mm/yyyy')  # editable dropdown calendar
@@ -129,14 +127,14 @@ def hydrograph_baseflow(data, root):
     date2 = DateEntry(datepickui, locale='en_UK', date_pattern='dd/mm/yyyy')
     date2.pack()
 
-    def _continue():
+    def _continue():  # function that is to be called by 'OK' button
         if date1 == date2:  # starting date and ending date should not be the same
             messagebox.showerror('Error!', 'Must pick a range of date')
         else:
-            run_plot()
+            run_plot()  # plot the graph if date range is correct
         datepickui.destroy()
 
-    tk.Button(datepickui, text="Get Date", command=_continue).pack(pady=20)
+    tk.Button(datepickui, text="OK", command=_continue).pack(pady=20)
     datepickui.mainloop()
 
 
@@ -159,21 +157,22 @@ def linear_regression(data, data2, root):
         tk.Button(top, text='Quit', command=_quit).grid(row=2, column=2)
         plot_widget.grid(row=0, column=0)
 
-        tk.Button(top, text='Details', command=details).grid(row=2, column=1)
+        tk.Button(top, text='Details', command=details).grid(row=2, column=1)  # button for Details
         plot_widget.grid(row=0, column=0)
 
-        def save():
+        def save():  # saving feature
             savee.savepng2('Rainfall-runoff Relations', fig)
 
         tk.Button(top, text='Save', command=save).grid(row=2, column=0)
         plot_widget.grid(row=0, column=0)
         return top
 
+    # function to generate a window and plot a table with graph details
     def details():
         new_window_2(root)
         plt.clf()
         ax1.axis('off')
-        showdetails()
+        showdetails()  # calling function to plot a table with graph details
 
     def new_window_2(root2):
         top2 = tk.Toplevel(root2)
@@ -201,7 +200,6 @@ def linear_regression(data, data2, root):
     plt.clf()  # clear plot first
 
     # read and group discharge by month
-    # df['Date/Time'] = pd.to_datetime(df['Date/Time'])
     df[df.columns[0]] = pd.to_datetime(df[df.columns[0]])
     dataf = DataFrame(df.groupby(pd.Grouper(key=df.columns[0], freq='1M'))[df.columns[1]].mean())
 
@@ -209,7 +207,6 @@ def linear_regression(data, data2, root):
     df2[df2.columns[0]] = pd.to_datetime(df2[df2.columns[0]])
     df2.set_index(df2.columns[0], inplace=True)
     rowcount = len(dataf.index)
-    # df2['mean'] = df2.iloc[:, :7].mean(axis=1)  # mean column is col 7
     df2['mean'] = df2.iloc[:, :len(df2.columns)].mean(axis=1)  # mean column is col 7
 
     # fill up NaN
@@ -230,8 +227,8 @@ def linear_regression(data, data2, root):
     rmse = mean_squared_error(ly, yl)  # root mean squared error
     r2 = r2_score(ly, yl)
 
-    # visualize
-    ax.scatter(lx, ly, label='x/y')
+    # visualize/plot the linear regression graph
+    ax.scatter(lx, ly, label='y/x')
     ax.set(xlabel="Rainfall", ylabel="Discharge", title="Linear Regression of Discharge against Rainfall")
     ax.plot(lx, yl, color='red', label="best fit line")
     ax.legend()
