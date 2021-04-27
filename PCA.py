@@ -120,8 +120,7 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
         datalist4.append(tempdata)
         l = l + 1
 
-    ##########################
-    # implement function to fill back baseflow and recalculate diff
+    # fill baseflow values and recalculate diff(discharge - baseflow)
     for i in range(length):
         start = datalist4[i].iloc[0, 0]
         dura = datalist3[i]['duration'].iloc[0]
@@ -143,12 +142,14 @@ def pcapreprocess(data, dryperiodstart, dryperiodend, wetperiodstart, wetperiode
                 datalist4[i]['counter'].iloc[m] = m
 
         for j in range(len(datalist4[i])):
-            # replacing baseflow 0 with gap
+            # replacing baseflow value 0 with gap
             datalist4[i]['base'] = [gap if x == 0 else x for x in datalist4[i]['base']]
             for m in range(len(datalist4[i]['base'])):
                 if (datalist4[i]['base'].iloc[m] == gap):
+                    # calculating new baseflow values
                     datalist4[i]['base'].iloc[m] = start_base + (
                                 datalist4[i]['base'].iloc[m] * datalist4[i]['counter'].iloc[m])
+                    # recalculating diff values
                     datalist4[i]['diff'].iloc[m] = datalist4[i]['Discharge (m3/s)'].iloc[m] - datalist4[i]['base'].iloc[
                         m]
 

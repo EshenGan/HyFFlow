@@ -188,14 +188,18 @@ def loadpackages(loadroot):
         newwindow.geometry("500x200")
         newwindow.resizable(0, 0)
 
+        # scannum is 1 will be dealing with discharge data
         if scannum == 1:
             data_discharge = pd.read_excel(file_path)
             scancounter1 = 1
+
+            # if else statement for finding null/nan values
             if data_discharge.isnull().values.any():
                 label_question = Label(newwindow,
                                        text="Excel file contains NULL values, would you like to remove NULL values?")
                 label_question.place(x=100, y=69)
 
+                # replace null values with 'NA' then drop the NA
                 def remove_na():
                     data_discharge[data_discharge.columns].replace('', np.nan, inplace=True)
                     data_discharge.dropna(inplace=True)
@@ -207,6 +211,7 @@ def loadpackages(loadroot):
                             command=remove_na)
                 b1.place(x=130, y=150)
 
+                # ignore null values
                 def no_remove():
                     messagebox.showinfo("Information", "File imported, NULL values in excel file ignored.")
                     newwindow.destroy()
@@ -219,14 +224,19 @@ def loadpackages(loadroot):
                 messagebox.showinfo("Information", "Excel file contains no error data, file imported successfully")
                 load_excel_data()
                 newwindow.destroy()
+        
+        # scannum is 2 will be dealing with monthly rainfall data
         elif scannum == 2:
             data_rainfall = pd.read_excel(file_path2)
             scancounter2 = 2
+
+            # if else statement for finding null/nan values
             if data_rainfall.isnull().values.any():
                 label_question = Label(newwindow,
                                        text="Excel file contains NULL values, would you like to remove NULL values?")
                 label_question.place(x=100, y=69)
 
+                # replace null values with 'NA' then drop the NA
                 def remove_na():
                     data_rainfall[data_rainfall.columns].replace('', np.nan, inplace=True)
                     data_rainfall.dropna(inplace=True)
@@ -238,6 +248,7 @@ def loadpackages(loadroot):
                             command=remove_na)
                 b1.place(x=130, y=150)
 
+                # ignore null values
                 def no_remove():
                     messagebox.showinfo("Information", "File imported, NULL values in excel file ignored.")
                     newwindow.destroy()
