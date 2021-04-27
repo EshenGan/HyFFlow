@@ -12,13 +12,19 @@ matplotlib.use('TkAgg')
 
 
 def anovaa(df, root):
+    #melting rainfaill stations columns
     dataf = pd.melt(df.reset_index(), value_vars=df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+
+    #dropping date column as it is not used
     indexname = dataf[dataf['rainfallstations'] == 'Date'].index
     dataf.drop(indexname, inplace=True)
+
+    #dropping NA values to have accurate anova results
     dataf['rainfall'].replace('', np.nan, inplace=True)
     dataf.dropna(subset=['rainfall'], inplace=True)
 
+    #creating window for table result
     def new_window(root1):
         figure, ax1 = plt.subplots(figsize=(13, 5), dpi=100)
         top = tk.Toplevel(root1)
@@ -26,6 +32,7 @@ def anovaa(df, root):
         canvas = FigureCanvasTkAgg(figure, master=top)
         plot_widget = canvas.get_tk_widget()
 
+        #quit button
         def _quit():
             plt.clf()
             top.destroy()
@@ -34,6 +41,7 @@ def anovaa(df, root):
 
         plot_widget.grid(row=0, column=0)
 
+        #save button
         def save():
             savee.saveexcel('ANOVA', model)
 
@@ -43,20 +51,26 @@ def anovaa(df, root):
 
     new_window(root)
     plt.clf()
-    # anova analysis
+    # anova analysis from statsmodels
     model = ols('rainfall ~ C(rainfallstations)', data=dataf).fit()
     aov_table = sm.stats.anova_lm(model)
     an.anova_table(aov_table)
 
 
 def posthoc(df, root):
+    #melting rainfaill stations columns
     dataf = pd.melt(df.reset_index(), value_vars=df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+
+    #dropping date column as it is not used
     indexname = dataf[dataf['rainfallstations'] == 'Date'].index
     dataf.drop(indexname, inplace=True)
+
+    #dropping NA values to have accurate anova post hoc results
     dataf['rainfall'].replace('', np.nan, inplace=True)
     dataf.dropna(subset=['rainfall'], inplace=True)
 
+    #creating window for table results
     def new_window(root1):
         figure, ax1 = plt.subplots(figsize=(13, 5), dpi=100)
         top = tk.Toplevel(root1)
@@ -64,6 +78,7 @@ def posthoc(df, root):
         canvas = FigureCanvasTkAgg(figure, master=top)
         plot_widget = canvas.get_tk_widget()
 
+        #quit button
         def _quit():
             plt.clf()
             top.destroy()
@@ -72,6 +87,7 @@ def posthoc(df, root):
 
         plot_widget.grid(row=0, column=0)
 
+        #save button
         def save():
             savee.savepng1('ANOVA_Post_Hoc')
 
@@ -85,14 +101,19 @@ def posthoc(df, root):
 
 
 def barchart(df, root):
-    df.drop(["Date"], axis=1, inplace=False)
+    #melting rainfaill stations columns
     dataf = pd.melt(df.reset_index(), value_vars=df.columns.values)
     dataf.columns = ['rainfallstations', 'rainfall']
+
+    #dropping date column as it is not used
     indexname = dataf[dataf['rainfallstations'] == 'Date'].index
     dataf.drop(indexname, inplace=True)
+
+    #dropping na values
     dataf['rainfall'].replace('', np.nan, inplace=True)
     dataf.dropna(subset=['rainfall'], inplace=True)
 
+    #creating window for the bar chart
     def new_window(root1):
         figure, ax1 = plt.subplots(figsize=(13, 7), dpi=100)
         top = tk.Toplevel(root1)
@@ -100,6 +121,7 @@ def barchart(df, root):
         canvas = FigureCanvasTkAgg(figure, master=top)
         plot_widget = canvas.get_tk_widget()
 
+        #quit button
         def _quit():
             plt.clf()
             top.destroy()
@@ -108,6 +130,7 @@ def barchart(df, root):
 
         plot_widget.grid(row=0, column=0)
 
+        #save button
         def save():
             savee.savepng1('Rainfall stations Mean Chart')
 

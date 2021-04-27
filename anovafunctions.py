@@ -17,11 +17,12 @@ def anova_table(aov):
     total_ss = aov['sum_sq'][0] + aov['sum_sq'][-1]
     total_df = aov['df'][0] + aov['df'][-1]
 
+    #creating a list to store the values
     lst = [['Between Groups', aov['sum_sq'][0], aov['df'][0], aov['mean_sq'][0], aov['F'][0], aov['PR(>F)'][0],
             aov['f_crit'][0]], ['Within Groups', aov['sum_sq'][-1], aov['df'][-1], aov['mean_sq'][-1]],
            ['Total', total_ss, total_df]]
 
-    # storing into dataframe
+    # storing list into dataframe
     df1 = pd.DataFrame(lst, columns=['', 'SS', 'df', 'MS', 'F', 'P-value', 'F crit'], dtype=float)
 
     # creating table
@@ -41,7 +42,7 @@ def anova_posthoc(dataf):
     post_hoc_res = comp.tukeyhsd()
     x = post_hoc_res.summary()
 
-    # storing into dataframe
+    # storing values into dataframe
     df = pd.DataFrame(x)
 
     # creating table
